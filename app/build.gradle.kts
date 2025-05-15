@@ -23,9 +23,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-//        ksp {
-//            arg("room.schemaLocation", "$projectDir/schemas")
-//        }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")

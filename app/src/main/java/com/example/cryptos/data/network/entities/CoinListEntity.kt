@@ -2,10 +2,10 @@ package com.example.cryptos.data.network.entities
 
 data class CoinListEntity(
     val timestamp: Int? = null,
-    val data: List<CoinDataEntity>? = null,
+    val data: List<CoinEntity>? = null,
 )
 
-data class CoinDataEntity(
+data class CoinEntity(
     val id: String? = null,
     val rank: String? = null,
     val symbol: String? = null,

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cryptos</string>
+
+    <string name="logo_sample">https://assets.coincap.io/assets/icons/%1$s@2x.png</string>
 </resources>

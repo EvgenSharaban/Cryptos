@@ -7,6 +7,8 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET("/v3/assets")
-    suspend fun getCoins(): Response<CoinListEntity>
+    suspend fun getCoins(
+
+    ): Response<CoinListEntity>
 
 }
