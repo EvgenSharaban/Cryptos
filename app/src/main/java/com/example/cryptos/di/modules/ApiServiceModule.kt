@@ -2,6 +2,7 @@ package com.example.cryptos.di.modules
 
 import com.example.cryptos.data.network.ApiService
 import com.example.cryptos.data.network.RetrofitClient
+import com.example.cryptos.data.network.interceptors.ApiKeyInterceptor
 import com.example.cryptos.data.network.interceptors.HttpLogger
 import dagger.Binds
 import dagger.Module
@@ -31,8 +32,12 @@ interface ApiServiceModule {
         @Singleton
         fun provideApiService(
             httpLoggingInterceptor: HttpLoggingInterceptor,
+            apiKeyInterceptor: ApiKeyInterceptor,
         ): ApiService {
-            return RetrofitClient(httpLoggingInterceptor).create()
+            return RetrofitClient(
+                httpLoggingInterceptor,
+                apiKeyInterceptor
+            ).create()
         }
     }
 }

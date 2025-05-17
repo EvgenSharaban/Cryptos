@@ -100,6 +100,7 @@ dependencies {
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.appcompat)
+    implementation(libs.kotlinx.collections.immutable)
 
     // retrofit
     implementation(libs.retrofit)

@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">Cryptos</string>
 
+    <string name="profile_screen">Profile</string>
+    <string name="coins_screen">Coins</string>
+    <string name="coin_details_screen">Coin details</string>
+    <string name="favorite_coins_screen">Watchlist</string>
+
+    <string name="try_again">Try again</string>
+
+    <string name="failed_to_load_data">Failed to load data</string>
+    <string name="unknown_error">Unknown error, please try again later</string>
+
     <string name="logo_sample">https://assets.coincap.io/assets/icons/%1$s@2x.png</string>
+    <string name="price_value">$%1$s</string>
 </resources>

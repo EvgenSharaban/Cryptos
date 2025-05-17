@@ -1,7 +1,7 @@
 package com.example.cryptos.domain.models
 
 data class CoinListDomain(
-    val timestamp: Int,
+    val timestamp: Long,
     val data: List<CoinDomain>,
 )
 
