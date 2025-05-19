@@ -30,7 +30,7 @@ class HomeScreenViewModel @Inject constructor(
         )
 
     init {
-        fetchCoins()
+//        fetchCoins()
     }
 
     fun fetchCoins() {

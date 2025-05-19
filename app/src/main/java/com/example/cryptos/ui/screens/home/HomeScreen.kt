@@ -34,9 +34,7 @@ fun HomeScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            onTryAgainAction = {
-                viewModel::fetchCoins
-            }
+            onTryAgainAction = viewModel::fetchCoins
         )
     }
 
