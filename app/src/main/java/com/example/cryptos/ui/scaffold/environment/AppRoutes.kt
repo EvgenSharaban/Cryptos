@@ -43,6 +43,7 @@ data object ProfileGraph {
 
 
 // this?.destination?.route convert class to String, this function convert String to class
+// used reflection this might incorrectly remove or modify code by app optimization, minify, shrinking, obfuscation
 fun NavDestination?.routClass(): KClass<*>? {
     return this?.route
         ?.split("/")

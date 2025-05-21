@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Сохраняем аннотацию kotlin.Metadata, необходимую для kotlin-reflect
+-keep class kotlin.Metadata
+
+# Сохраняем все вложенные классы в пакете com.example.cryptos.ui.scaffold.environment
+-keep class com.example.cryptos.ui.scaffold.environment.** { *; }
+
+# Сохраняем имена классов, используемых в рефлексии
+-keepnames class com.example.cryptos.ui.scaffold.environment.** { *; }
+
+# Сохраняем вложенные классы, чтобы избежать проблем с Class.forName
+-keepattributes InnerClasses, EnclosingMethod
+
+# Сохраняем сигнатуры, необходимые для рефлексии
+-keepattributes Signature
