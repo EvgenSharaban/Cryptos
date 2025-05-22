@@ -17,7 +17,8 @@ object CoinsDataBaseMapper {
             priceUsd = this.priceUsd,
             changePercent24Hr = this.changePercent24Hr,
             vwap24Hr = this.vwap24Hr,
-            explorer = this.explorer
+            explorer = this.explorer,
+            isFavorite = this.isFavorite,
         )
     }
 

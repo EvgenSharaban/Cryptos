@@ -39,6 +39,13 @@ class CoinsRepositoryImpl @Inject constructor(
             .map { }
     }
 
+    override suspend fun toggleFavorite(coinId: String) {
+        val coin = coinsDao.getCoinById(coinId)
+        coin?.let {
+            coinsDao.updateFavoriteStatus(coinId, !it.isFavorite)
+        }
+    }
+
     private suspend fun insertCoinsToDB(list: List<CoinDomain>) {
         try {
             dataBase.withTransaction {

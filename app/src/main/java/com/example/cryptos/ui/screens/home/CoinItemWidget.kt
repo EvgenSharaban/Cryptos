@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,6 +47,7 @@ import kotlin.math.abs
 fun CoinItemWidget(
     item: HomeScreenItem,
     onConClicked: (String) -> Unit,
+    onFavoriteClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -60,7 +65,7 @@ fun CoinItemWidget(
         Row(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.itemCoinBackground)
-                .padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 16.dp)
+                .padding(top = 16.dp, bottom = 16.dp, start = 4.dp, end = 8.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -86,13 +91,25 @@ fun CoinItemWidget(
                 )
             }
             Spacer(Modifier.size(12.dp))
-            val roundedPrice = item.price.toDouble().roundTo(2).toString()
-            Text(
-                text = stringResource(R.string.price_value, roundedPrice),
+            Column(
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-            PercentageChangeText(safeCastStringToDouble(item.changePercent24Hr))
+                horizontalAlignment = Alignment.End
+            ) {
+                val roundedPrice = item.price.toDouble().roundTo(2).toString()
+                Text(
+                    text = stringResource(R.string.price_value, roundedPrice),
+                    textAlign = TextAlign.Center
+                )
+                PercentageChangeText(safeCastStringToDouble(item.changePercent24Hr))
+            }
+            Spacer(Modifier.size(8.dp))
+            IconButton(onClick = onFavoriteClicked) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = if (item.isFavorite) "Remove from favorites" else "Add to favorites",
+                    tint = if (item.isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
         }
     }
 }
@@ -142,9 +159,11 @@ private fun CoinItemWidgetItemPreview() {
                         price = "104215.561",
                         rank = "100",
                         marketCapUsd = "1134454375148.0439441877343485",
-                        changePercent24Hr = "0.894"
+                        changePercent24Hr = "0.894",
+                        isFavorite = false
                     ),
                     onConClicked = {},
+                    onFavoriteClicked = {},
                 )
             }
         }

@@ -8,4 +8,5 @@ interface CoinsRepository {
     val coinsLocal: Flow<List<CoinRoomEntity>>
 
     suspend fun fetchCoins(): Result<Unit>
+    suspend fun toggleFavorite(coinId: String)
 }

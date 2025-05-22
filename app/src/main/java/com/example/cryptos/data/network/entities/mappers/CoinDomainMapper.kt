@@ -38,7 +38,8 @@ object CoinListDomainMapper : FromEntityToDomainMapper<CoinListEntity, CoinListD
             priceUsd = entity?.priceUsd ?: "",
             changePercent24Hr = entity?.changePercent24Hr ?: "",
             vwap24Hr = entity?.vwap24Hr ?: "",
-            explorer = entity?.explorer ?: ""
+            explorer = entity?.explorer ?: "",
+            isFavorite = false,
         )
     }
 

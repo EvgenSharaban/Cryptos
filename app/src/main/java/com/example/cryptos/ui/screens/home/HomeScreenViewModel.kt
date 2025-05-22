@@ -39,6 +39,12 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
+    fun toggleFavorite(coinId: String) {
+        viewModelScope.launch {
+            coinsRepository.toggleFavorite(coinId)
+        }
+    }
+
     data class ScreenState(
         val items: List<HomeScreenItem>
     )

@@ -31,6 +31,9 @@ fun HomeScreen() {
             onItemClicked = { id ->
                 navController.navigate(route = CoinDetailsRoute(id))
             },
+            onFavoriteClicked = { id ->
+                viewModel.toggleFavorite(id)
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
@@ -44,6 +47,7 @@ fun HomeScreen() {
 fun ItemsContent(
     getLoadResult: () -> LoadResult<ScreenState>,
     onItemClicked: (String) -> Unit,
+    onFavoriteClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
     onTryAgainAction: () -> Unit = {},
 ) {
@@ -58,6 +62,9 @@ fun ItemsContent(
                         item = item,
                         onConClicked = { id ->
                             onItemClicked(id)
+                        },
+                        onFavoriteClicked = {
+                            onFavoriteClicked(item.id)
                         }
                     )
                 }

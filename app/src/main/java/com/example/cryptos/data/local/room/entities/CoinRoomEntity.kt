@@ -1,5 +1,6 @@
 package com.example.cryptos.data.local.room.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -17,4 +18,6 @@ data class CoinRoomEntity(
     val changePercent24Hr: String,
     val vwap24Hr: String,
     val explorer: String,
+    @ColumnInfo(defaultValue = "0")
+    val isFavorite: Boolean = false,
 )

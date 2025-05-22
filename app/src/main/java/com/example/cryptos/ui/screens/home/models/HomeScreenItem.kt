@@ -8,4 +8,5 @@ data class HomeScreenItem(
     val price: String,
     val marketCapUsd: String,
     val changePercent24Hr: String,
+    val isFavorite: Boolean,
 )

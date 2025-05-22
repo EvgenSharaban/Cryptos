@@ -12,7 +12,8 @@ object CoinsUiMapper {
             shortName = this.symbol,
             price = this.priceUsd,
             marketCapUsd = this.marketCapUsd,
-            changePercent24Hr = this.changePercent24Hr
+            changePercent24Hr = this.changePercent24Hr,
+            isFavorite = this.isFavorite,
         )
     }
 
