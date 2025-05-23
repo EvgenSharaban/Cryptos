@@ -15,9 +15,14 @@ import com.example.cryptos.data.local.room.entities.CoinRoomEntity
             from = 1,
             to = 2,
             spec = DataBase.MyAutoMigration::class
+        ),
+        AutoMigration(
+            from = 2,
+            to = 3,
+            spec = DataBase.MyAutoMigration::class
         )
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class DataBase : RoomDatabase() {

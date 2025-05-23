@@ -32,7 +32,7 @@ import com.example.cryptos.core.other.roundTo
 import com.example.cryptos.ui.components.LoadResultContent
 import com.example.cryptos.ui.scaffold.AppScaffold
 import com.example.cryptos.ui.screens.coindetails.models.DetailsUiModel
-import com.example.cryptos.ui.screens.home.PercentageChangeText
+import com.example.cryptos.ui.screens.coins_lists.PercentageChangeText
 import java.text.NumberFormat
 import java.util.Locale
 

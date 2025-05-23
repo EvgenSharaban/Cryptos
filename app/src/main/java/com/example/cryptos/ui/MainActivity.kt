@@ -19,8 +19,8 @@ import com.example.cryptos.ui.scaffold.environment.FavoriteGraph
 import com.example.cryptos.ui.scaffold.environment.ProfileGraph
 import com.example.cryptos.ui.screens.LocalNavController
 import com.example.cryptos.ui.screens.coindetails.CoinDetailsScreen
-import com.example.cryptos.ui.screens.favorite.FavoriteCoinsScreen
-import com.example.cryptos.ui.screens.home.HomeScreen
+import com.example.cryptos.ui.screens.coins_lists.favorite.FavoriteCoinsScreen
+import com.example.cryptos.ui.screens.coins_lists.home.HomeScreen
 import com.example.cryptos.ui.screens.profile.ProfileScreen
 import com.example.cryptos.ui.theme.CryptosTheme
 import dagger.hilt.android.AndroidEntryPoint

@@ -16,6 +16,9 @@ interface CoinsDao {
     @Query("SELECT * FROM coins WHERE id = :coinId")
     suspend fun getCoinById(coinId: String): CoinRoomEntity?
 
+    @Query("SELECT * FROM coins WHERE isFavorite = 1")
+    fun getFavoriteCoins(): Flow<List<CoinRoomEntity>>
+
     @Insert(onConflict = REPLACE)
     suspend fun insertAllCoins(coins: List<CoinRoomEntity>)
 

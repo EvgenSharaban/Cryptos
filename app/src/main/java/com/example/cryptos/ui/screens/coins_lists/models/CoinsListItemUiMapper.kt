@@ -1,11 +1,11 @@
-package com.example.cryptos.ui.screens.home.models
+package com.example.cryptos.ui.screens.coins_lists.models
 
 import com.example.cryptos.data.local.room.entities.CoinRoomEntity
 
-object CoinsUiMapper {
+object CoinsListItemUiMapper {
 
-    fun CoinRoomEntity.mapToUi(): HomeScreenItem {
-        return HomeScreenItem(
+    fun CoinRoomEntity.mapToUi(): CoinsListItemUI {
+        return CoinsListItemUI(
             id = this.id,
             rank = this.rank,
             fullName = this.name,
@@ -17,6 +17,6 @@ object CoinsUiMapper {
         )
     }
 
-    fun List<CoinRoomEntity>.mapToUiList(): List<HomeScreenItem> =
+    fun List<CoinRoomEntity>.mapToUiList(): List<CoinsListItemUI> =
         this.map { it.mapToUi() }
 }

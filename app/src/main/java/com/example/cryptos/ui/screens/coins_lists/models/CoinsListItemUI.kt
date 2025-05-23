@@ -1,6 +1,6 @@
-package com.example.cryptos.ui.screens.home.models
+package com.example.cryptos.ui.screens.coins_lists.models
 
-data class HomeScreenItem(
+data class CoinsListItemUI(
     val id: String,
     val rank: String,
     val fullName: String,

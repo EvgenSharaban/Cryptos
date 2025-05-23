@@ -1,4 +1,4 @@
-package com.example.cryptos.ui.screens.home
+package com.example.cryptos.ui.screens.coins_lists
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -36,7 +36,7 @@ import com.example.cryptos.core.other.TAG
 import com.example.cryptos.core.other.formatNumber
 import com.example.cryptos.core.other.roundTo
 import com.example.cryptos.ui.components.RoundImageCoinAvatar
-import com.example.cryptos.ui.screens.home.models.HomeScreenItem
+import com.example.cryptos.ui.screens.coins_lists.models.CoinsListItemUI
 import com.example.cryptos.ui.theme.CryptosTheme
 import com.example.cryptos.ui.theme.DarkGreen
 import com.example.cryptos.ui.theme.itemCoinBackground
@@ -45,7 +45,7 @@ import kotlin.math.abs
 
 @Composable
 fun CoinItemWidget(
-    item: HomeScreenItem,
+    item: CoinsListItemUI,
     onConClicked: (String) -> Unit,
     onFavoriteClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -152,7 +152,7 @@ private fun CoinItemWidgetItemPreview() {
                 modifier = Modifier.padding(it)
             ) {
                 CoinItemWidget(
-                    item = HomeScreenItem(
+                    item = CoinsListItemUI(
                         id = "1",
                         fullName = "Bitcoin",
                         shortName = "BTC",

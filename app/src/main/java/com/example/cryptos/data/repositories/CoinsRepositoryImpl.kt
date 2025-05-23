@@ -24,6 +24,8 @@ class CoinsRepositoryImpl @Inject constructor(
 ) : CoinsRepository {
 
     override val coinsLocal: Flow<List<CoinRoomEntity>> = coinsDao.getAllCoins()
+    override val favoriteCoinsLocal: Flow<List<CoinRoomEntity>>
+        get() = coinsDao.getFavoriteCoins()
 
     override suspend fun fetchCoins(): Result<Unit> {
         return safeCall {
