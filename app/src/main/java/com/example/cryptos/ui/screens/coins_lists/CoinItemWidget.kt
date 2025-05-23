@@ -52,13 +52,13 @@ fun CoinItemWidget(
 ) {
     Card(
         modifier = modifier
+            .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+            .fillMaxWidth()
             .clickable(
                 onClick = {
                     onConClicked(item.id)
                 }
-            )
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-            .fillMaxWidth(),
+            ),
 //        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
         shape = RoundedCornerShape(8.dp),
     ) {
