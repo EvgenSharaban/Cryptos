@@ -14,6 +14,7 @@ import com.example.cryptos.data.network.entities.mappers.CoinListDomainMapper
 import com.example.cryptos.domain.models.CoinDomain
 import com.example.cryptos.domain.repositories.CoinsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class CoinsRepositoryImpl @Inject constructor(
@@ -37,6 +38,10 @@ class CoinsRepositoryImpl @Inject constructor(
                 Log.e(TAG, "getCoins(): failure, \nerror = $error")
             }
             .map { }
+//        fakeInsert() // need or test
+//        return Result
+//            .success {}
+//            .map {  }
     }
 
     override suspend fun toggleFavorite(coinId: String) {
@@ -46,16 +51,49 @@ class CoinsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCoinById(coinId: String): CoinRoomEntity? {
+        try {
+            val coin = coinsDao.getCoinById(coinId)
+            return coin
+        } catch (e: Throwable) {
+            Log.d(TAG, "getCoinById: failed, error = $e ")
+            return null
+        }
+    }
+
     private suspend fun insertCoinsToDB(list: List<CoinDomain>) {
         try {
             dataBase.withTransaction {
+                val favoriteCoinsList = coinsDao.getAllCoins().first()
+                    .filter { it.isFavorite == true }
+                    .map { it.id }
                 coinsDao.deleteAllCoins()
                 coinsDao.insertAllCoins(list.mapToLocalEntityList())
+                coinsDao.getAllCoins().first().forEach {
+                    if (it.id in favoriteCoinsList) {
+                        coinsDao.updateFavoriteStatus(it.id, true)
+                    }
+                }
             }
             Log.d(TAG, "insertCoinsToDB: success")
         } catch (e: Throwable) {
             Log.e(TAG, "insertCoinsToDB: failed, \nerror = $e")
         }
     }
+
+//    private suspend fun fakeInsert() { // need for test
+//        try {
+//            dataBase.withTransaction {
+//                val favoriteCoinsList = coinsDao.getAllCoins().first().filter {
+//                    it.isFavorite == true
+//                }.map { it.id }
+//                Log.d(TAG, "fakeInsert: favoriteList = $favoriteCoinsList")
+//                delay(2000)
+//                coinsDao.deleteAllCoins()
+//            }
+//        } catch (e: Throwable) {
+//
+//        }
+//    }
 
 }

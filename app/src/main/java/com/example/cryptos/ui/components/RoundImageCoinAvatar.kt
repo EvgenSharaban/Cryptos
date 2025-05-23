@@ -20,7 +20,7 @@ import coil3.transform.Transformation
 import com.example.cryptos.R
 
 @Composable
-fun RoundImage(
+fun RoundImageCoinAvatar(
     logo: String,
     modifier: Modifier = Modifier
 ) {
@@ -44,7 +44,7 @@ fun RoundImage(
     }
 }
 
-class TrimBottomPaddingTransformation : Transformation() {
+private class TrimBottomPaddingTransformation : Transformation() {
     override val cacheKey: String
         get() = "TrimPaddingTransformation"
 

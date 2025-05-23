@@ -12,7 +12,7 @@ data object CoinsGraph {
 
     @Serializable
     data class CoinDetailsRoute(
-        val id: String,
+        val id: String, // must have same name like where it call (savedStateHandle.get<String>("id"))
     )
 
 }

@@ -1,6 +1,7 @@
 package com.example.cryptos.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
+import com.example.cryptos.R
 import com.example.cryptos.domain.repositories.CoinsRepository
 import com.example.cryptos.ui.components.LoadResult
 import com.example.cryptos.ui.screens.base.BaseViewModel
@@ -21,7 +22,11 @@ class HomeScreenViewModel @Inject constructor(
 
     val stateFlow: StateFlow<LoadResult<ScreenState>> = coinsRepository.coinsLocal
         .map {
-            LoadResult.Success(ScreenState(it.mapToUiList()))
+            if (it.isEmpty()) {
+                LoadResult.Empty(R.string.no_coins_found)
+            } else {
+                LoadResult.Success(ScreenState(it.mapToUiList()))
+            }
         }
         .stateIn(
             scope = viewModelScope,

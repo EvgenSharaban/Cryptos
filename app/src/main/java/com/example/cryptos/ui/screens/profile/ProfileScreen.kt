@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.cryptos.R
@@ -14,7 +15,7 @@ import com.example.cryptos.ui.scaffold.AppScaffold
 @Composable
 fun ProfileScreen() {
     AppScaffold(
-        titleRes = R.string.profile_screen,
+        title = stringResource(R.string.profile_screen),
         showNavigationUp = false,
     ) { paddingValues ->
         Text(

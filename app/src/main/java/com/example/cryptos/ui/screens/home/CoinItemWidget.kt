@@ -35,7 +35,7 @@ import com.example.cryptos.R
 import com.example.cryptos.core.other.TAG
 import com.example.cryptos.core.other.formatNumber
 import com.example.cryptos.core.other.roundTo
-import com.example.cryptos.ui.components.RoundImage
+import com.example.cryptos.ui.components.RoundImageCoinAvatar
 import com.example.cryptos.ui.screens.home.models.HomeScreenItem
 import com.example.cryptos.ui.theme.CryptosTheme
 import com.example.cryptos.ui.theme.DarkGreen
@@ -77,7 +77,7 @@ fun CoinItemWidget(
                 modifier = Modifier.width(26.dp),
             )
             Spacer(Modifier.size(8.dp))
-            RoundImage(
+            RoundImageCoinAvatar(
                 logo = item.shortName,
                 modifier = Modifier.size(32.dp)
             )
@@ -106,7 +106,7 @@ fun CoinItemWidget(
             IconButton(onClick = onFavoriteClicked) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
-                    contentDescription = if (item.isFavorite) "Remove from favorites" else "Add to favorites",
+                    contentDescription = if (item.isFavorite) stringResource(R.string.remove_from_favorites) else stringResource(R.string.add_to_favorites),
                     tint = if (item.isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
@@ -114,19 +114,9 @@ fun CoinItemWidget(
     }
 }
 
-private fun safeCastStringToDouble(value: String): Double {
-    try {
-        val castingValue = value.toDouble()
-        return castingValue
-    } catch (e: Throwable) {
-        Log.e(TAG, "safeCastStringToDouble: error = $e")
-        throw e
-    }
-}
-
 @Composable
-private fun PercentageChangeText(value: Double) {
-    val arrow = if (value >= 0) "▲" else "▼"
+fun PercentageChangeText(value: Double) {
+    val arrow = if (value >= 0) stringResource(R.string.arrow_up) else stringResource(R.string.arrow_down)
     val color = if (value >= 0) DarkGreen else Color.Red
     val formattedValue = String.format(Locale.US, "%.2f%%", abs(value))
 
@@ -141,6 +131,16 @@ private fun PercentageChangeText(value: Double) {
         fontSize = 16.sp,
         style = MaterialTheme.typography.bodyMedium
     )
+}
+
+private fun safeCastStringToDouble(value: String): Double {
+    try {
+        val castingValue = value.toDouble()
+        return castingValue
+    } catch (e: Throwable) {
+        Log.e(TAG, "safeCastStringToDouble: error = $e")
+        throw e
+    }
 }
 
 @Preview(showSystemUi = true)

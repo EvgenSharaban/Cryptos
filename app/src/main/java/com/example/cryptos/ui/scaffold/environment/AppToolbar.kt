@@ -1,6 +1,5 @@
 package com.example.cryptos.ui.scaffold.environment
 
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -11,18 +10,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import com.example.cryptos.ui.screens.LocalNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppToolbar(
-    @StringRes titleRes: Int,
+    title: String,
     showNavigationUp: Boolean,
+    onAction: @Composable () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         title = {
-            Text(text = stringResource(titleRes))
+            Text(text = title)
         },
         navigationIcon = {
             if (showNavigationUp) {
@@ -37,6 +36,7 @@ fun AppToolbar(
                 }
             }
         },
+        actions = { onAction.invoke() },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )

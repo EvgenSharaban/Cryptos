@@ -9,4 +9,5 @@ interface CoinsRepository {
 
     suspend fun fetchCoins(): Result<Unit>
     suspend fun toggleFavorite(coinId: String)
+    suspend fun getCoinById(coinId: String): CoinRoomEntity?
 }

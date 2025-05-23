@@ -18,5 +18,5 @@ data class CoinDomain(
     val changePercent24Hr: String,
     val vwap24Hr: String,
     val explorer: String,
-    val isFavorite: Boolean,
+    val isFavorite: Boolean = false,
 )

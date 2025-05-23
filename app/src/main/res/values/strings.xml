@@ -6,11 +6,24 @@
     <string name="coin_details_screen">Coin details</string>
     <string name="favorite_coins_screen">Watchlist</string>
 
+    <string name="rank">Rank #%1$s</string>
+
     <string name="try_again">Try again</string>
+    <string name="no_coins_found">No coins were found</string>
 
     <string name="failed_to_load_data">Failed to load data</string>
     <string name="unknown_error">Unknown error, please try again later</string>
 
     <string name="logo_sample">https://assets.coincap.io/assets/icons/%1$s@2x.png</string>
     <string name="price_value">$%1$s</string>
+    <string name="symbol">Symbol</string>
+    <string name="_24h_volume">24h Volume</string>
+    <string name="supply">Supply</string>
+    <string name="market_cap">Market Cap</string>
+    <string name="market_data">Market Data</string>
+    <string name="current_price">Current Price</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="arrow_up">▲</string>
+    <string name="arrow_down">▼</string>
 </resources>

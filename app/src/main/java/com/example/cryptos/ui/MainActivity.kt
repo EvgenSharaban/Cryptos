@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.cryptos.ui.scaffold.environment.CoinsGraph
 import com.example.cryptos.ui.scaffold.environment.CoinsGraph.CoinDetailsRoute
 import com.example.cryptos.ui.scaffold.environment.FavoriteGraph
@@ -57,16 +56,14 @@ fun NavApp() {
             navigation<CoinsGraph>(startDestination = CoinsGraph.CoinsRoute) {
                 composable<CoinsGraph.CoinsRoute> { HomeScreen() }
                 composable<CoinDetailsRoute> { entry ->
-                    val route: CoinDetailsRoute = entry.toRoute()
-                    CoinDetailsScreen(route.id)
+                    CoinDetailsScreen()
                 }
             }
 
             navigation<FavoriteGraph>(startDestination = FavoriteGraph.FavoriteCoinsRoute) {
                 composable<FavoriteGraph.FavoriteCoinsRoute> { FavoriteCoinsScreen() }
                 composable<FavoriteGraph.FavoriteCoinDetailsRoute> { entry ->
-                    val route: CoinDetailsRoute = entry.toRoute()
-                    CoinDetailsScreen(route.id)
+                    CoinDetailsScreen()
                 }
             }
             navigation<ProfileGraph>(startDestination = ProfileGraph.ProfileRoute) {

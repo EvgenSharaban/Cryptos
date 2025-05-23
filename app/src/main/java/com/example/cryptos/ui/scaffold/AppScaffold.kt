@@ -1,6 +1,5 @@
 package com.example.cryptos.ui.scaffold
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -11,16 +10,20 @@ import com.example.cryptos.ui.screens.LocalNavController
 
 @Composable
 fun AppScaffold(
-    @StringRes titleRes: Int,
+    title: String,
     showNavigationUp: Boolean,
+    toolbarAction: @Composable (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val navController = LocalNavController.current
     Scaffold(
         topBar = {
             AppToolbar(
-                titleRes = titleRes,
-                showNavigationUp = showNavigationUp
+                title = title,
+                showNavigationUp = showNavigationUp,
+                onAction = {
+                    toolbarAction?.invoke()
+                }
             )
         },
         bottomBar = {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cryptos.R
 import com.example.cryptos.ui.components.LoadResult
@@ -23,7 +24,7 @@ fun HomeScreen() {
     val navController = LocalNavController.current
 
     AppScaffold(
-        titleRes = R.string.coins_screen,
+        title = stringResource(R.string.coins_screen),
         showNavigationUp = false
     ) { paddingValues ->
         ItemsContent(
