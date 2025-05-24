@@ -1,5 +1,6 @@
 package com.example.cryptos.data.network
 
+import com.example.cryptos.BuildConfig
 import com.example.cryptos.data.network.interceptors.ApiKeyInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,14 +22,11 @@ class RetrofitClient @Inject constructor(
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     fun create(): ApiService = retrofit.create()
 
-    companion object {
-        private const val BASE_URL = "https://rest.coincap.io"
-    }
 }

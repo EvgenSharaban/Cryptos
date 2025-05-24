@@ -14,23 +14,55 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Сохраняем аннотацию kotlin.Metadata, необходимую для kotlin-reflect
--keep class kotlin.Metadata
+# Saving the kotlin.Metadata annotation needed for kotlin-reflect
+-keep class kotlin.Metadata { *; }
 
-# Сохраняем все вложенные классы в пакете com.example.cryptos.ui.scaffold.environment
+# saving all nested classes in the package com.example.cryptos.ui.scaffold.environment
 -keep class com.example.cryptos.ui.scaffold.environment.** { *; }
 
-# Сохраняем имена классов, используемых в рефлексии
+# Saving class names used in reflection
 -keepnames class com.example.cryptos.ui.scaffold.environment.** { *; }
 
-# Сохраняем вложенные классы, чтобы избежать проблем с Class.forName
+# Saving nested classes to avoid problems with Class.forName
 -keepattributes InnerClasses, EnclosingMethod
 
-# Сохраняем сигнатуры, необходимые для рефлексии
+# saving the signatures needed for reflection
 -keepattributes Signature
+
+# Adding rules for network models
+-keep class com.example.cryptos.data.network.entities.** { *; }
+-keepclassmembers class com.example.cryptos.data.network.entities.** { *; }
+
+# Adding rules for domain models
+-keep class com.example.cryptos.domain.models.** { *; }
+-keepclassmembers class com.example.cryptos.domain.models.** { *; }
+
+# Adding rules for Room entities
+#-keep class com.example.cryptos.data.local.room.entities.** { *; }
+#-keepclassmembers class com.example.cryptos.data.local.room.entities.** { *; }
+
+# Rules for Gson
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Rools for Kotlin Serialization
+-keepclassmembers class kotlinx.** { *; }
+-keepclassmembers class kotlinx.serialization.** { *; }
+-keep,includedescriptorclasses class com.example.cryptos.**$$serializer { *; }
+-keepclassmembers class com.example.cryptos.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.example.cryptos.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}

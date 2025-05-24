@@ -10,6 +10,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+val configProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    configProperties.load(localPropertiesFile.inputStream())
+}
+
+val apiToken = configProperties.getProperty("api.token") ?: throw GradleException(
+    "API token not found in local.properties. Please define 'api.token'."
+)
+
+val baseURL = configProperties.getProperty("base.url") ?: throw GradleException(
+    "Base URL not found in local.properties. Please define 'base.url'."
+)
+
 android {
     namespace = "com.example.cryptos"
     compileSdk = 35
@@ -22,6 +36,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_TOKEN", "\"${apiToken}\"")
+        buildConfigField("String", "BASE_URL", "\"${baseURL}\"")
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -65,6 +82,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
