@@ -3,7 +3,10 @@ package com.example.cryptos.di.modules
 import com.example.cryptos.data.network.ApiService
 import com.example.cryptos.data.network.RetrofitClient
 import com.example.cryptos.data.network.interceptors.ApiKeyInterceptor
-import com.example.cryptos.data.network.interceptors.HttpLogger
+import com.example.cryptos.data.network.interceptors.HttpLoggerInterceptor
+import com.example.cryptos.data.network.interceptors.NoInternetConnectionInterceptor
+import com.example.cryptos.data.usecases.CheckConnectionUseCaseImpl
+import com.example.cryptos.domain.usecases.CheckConnectionUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -17,7 +20,13 @@ import javax.inject.Singleton
 interface ApiServiceModule {
 
     @Binds
-    fun provideHttpLogger(httpLogger: HttpLogger): HttpLoggingInterceptor.Logger
+    fun provideHttpLogger(httpLoggerInterceptor: HttpLoggerInterceptor): HttpLoggingInterceptor.Logger
+
+    @Singleton
+    @Binds
+    fun provideCheckConnection(
+        checkConnectionUseCaseImpl: CheckConnectionUseCaseImpl
+    ): CheckConnectionUseCase
 
     companion object {
 
@@ -33,10 +42,12 @@ interface ApiServiceModule {
         fun provideApiService(
             httpLoggingInterceptor: HttpLoggingInterceptor,
             apiKeyInterceptor: ApiKeyInterceptor,
+            noInternetConnectionInterceptor: NoInternetConnectionInterceptor,
         ): ApiService {
             return RetrofitClient(
                 httpLoggingInterceptor,
-                apiKeyInterceptor
+                apiKeyInterceptor,
+                noInternetConnectionInterceptor
             ).create()
         }
     }

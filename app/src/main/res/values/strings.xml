@@ -8,11 +8,15 @@
 
     <string name="rank">Rank #%1$s</string>
 
+    <string name="cansel">Cansel</string>
     <string name="try_again">Try again</string>
+    <string name="try_again_later">Try again later</string>
     <string name="no_coins_found">No coins were found</string>
 
-    <string name="failed_to_load_data">Failed to load data</string>
+    <string name="failed_to_load_data_error">Failed to load data</string>
     <string name="unknown_error">Unknown error, please try again later</string>
+    <string name="network_unavailable_error">Network unavailable</string>
+    <string name="connect_to_internet_and_try_again">Connect to the internet and try again</string>
 
     <string name="logo_sample">https://assets.coincap.io/assets/icons/%1$s@2x.png</string>
     <string name="price_value">$%1$s</string>

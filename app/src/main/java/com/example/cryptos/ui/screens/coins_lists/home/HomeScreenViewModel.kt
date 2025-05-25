@@ -1,46 +1,67 @@
 package com.example.cryptos.ui.screens.coins_lists.home
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.example.cryptos.R
 import com.example.cryptos.domain.repositories.CoinsRepository
 import com.example.cryptos.ui.components.LoadResult
+import com.example.cryptos.ui.components.NoInternetException
 import com.example.cryptos.ui.screens.base.BaseViewModel
+import com.example.cryptos.ui.screens.coins_lists.EventsForCoinsLists
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListItemUiMapper.mapToUiList
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     val coinsRepository: CoinsRepository,
+    @ApplicationContext val context: Context,
 ) : BaseViewModel() {
 
-    val stateFlow: StateFlow<LoadResult<CoinsListScreenState>> = coinsRepository.coinsLocal
-        .map {
-            if (it.isEmpty()) {
-                LoadResult.Empty(R.string.no_coins_found)
-            } else {
-                LoadResult.Success(CoinsListScreenState(it.mapToUiList()))
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = LoadResult.Loading
-        )
+    private var _stateFlow = MutableStateFlow<LoadResult<CoinsListScreenState>>(LoadResult.Loading)
+    val stateFlow: StateFlow<LoadResult<CoinsListScreenState>> = _stateFlow.asStateFlow()
+
+    private val _event = Channel<EventsForCoinsLists>(Channel.BUFFERED)
+    val event = _event.receiveAsFlow()
 
     init {
+        initiateCacheData()
 //        fetchCoins()
     }
 
-    fun fetchCoins() {
+    fun fetchCoins(delayTime: Long? = null) {
         viewModelScope.launch {
-            coinsRepository.fetchCoins()
+            _stateFlow.value = LoadResult.Loading
+            if (delayTime != null && delayTime > 0) delay(delayTime)
+            coinsRepository.fetchCoins().onFailure { exception ->
+                // TODO if LoadResult.Error doesn't need delete it and everything connected with it
+//                _stateFlow.value = LoadResult.Error(exception as Exception)
+                val coinsLocalList = coinsRepository.coinsLocal.first()
+                val title = exception.message ?: context.getString(R.string.unknown_error)
+                val description = if (exception.cause is NoInternetException) {
+                    context.getString(R.string.connect_to_internet_and_try_again)
+                } else {
+                    ""
+                }
+                _event.trySend(
+                    EventsForCoinsLists.MessageForUser(
+                        messageTitle = title,
+                        messageDescription = description
+                    )
+                )
+                _stateFlow.value = LoadResult.Success(CoinsListScreenState(coinsLocalList.mapToUiList()))
+            }
         }
     }
 
@@ -50,4 +71,17 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
+    private fun initiateCacheData() {
+        viewModelScope.launch {
+            coinsRepository.coinsLocal.collect { coins ->
+                _stateFlow.update {
+                    if (coins.isEmpty()) {
+                        LoadResult.Empty(R.string.no_coins_found)
+                    } else {
+                        LoadResult.Success(CoinsListScreenState(coins.mapToUiList()))
+                    }
+                }
+            }
+        }
+    }
 }

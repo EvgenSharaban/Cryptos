@@ -1,5 +1,6 @@
 package com.example.cryptos.data.repositories
 
+import android.content.Context
 import android.util.Log
 import androidx.room.withTransaction
 import com.example.cryptos.core.networking.safeCall
@@ -13,6 +14,7 @@ import com.example.cryptos.data.network.ApiService
 import com.example.cryptos.data.network.entities.mappers.CoinListDomainMapper
 import com.example.cryptos.domain.models.CoinDomain
 import com.example.cryptos.domain.repositories.CoinsRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -21,6 +23,7 @@ class CoinsRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val coinsDao: CoinsDao,
     private val dataBase: DataBase,
+    @ApplicationContext private val context: Context
 ) : CoinsRepository {
 
     override val coinsLocal: Flow<List<CoinRoomEntity>> = coinsDao.getAllCoins()
@@ -40,10 +43,14 @@ class CoinsRepositoryImpl @Inject constructor(
                 Log.e(TAG, "getCoins(): failure, \nerror = $error")
             }
             .map { }
-//        fakeInsert() // need or test
+
+//        fakeInsert() // need for test
 //        return Result
 //            .success {}
 //            .map {  }
+
+//        return Result  // need for test
+//            .failure(LoadDataException(context.getString(R.string.failed_to_load_data_error)))
     }
 
     override suspend fun toggleFavorite(coinId: String) {

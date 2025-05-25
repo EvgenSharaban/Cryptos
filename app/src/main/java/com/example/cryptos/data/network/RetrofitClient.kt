@@ -2,6 +2,7 @@ package com.example.cryptos.data.network
 
 import com.example.cryptos.BuildConfig
 import com.example.cryptos.data.network.interceptors.ApiKeyInterceptor
+import com.example.cryptos.data.network.interceptors.NoInternetConnectionInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,9 +15,11 @@ import javax.inject.Singleton
 class RetrofitClient @Inject constructor(
     httpLoggingInterceptor: HttpLoggingInterceptor,
     apiKeyInterceptor: ApiKeyInterceptor,
+    noInternetConnectionInterceptor: NoInternetConnectionInterceptor,
 ) {
 
     private val client = OkHttpClient().newBuilder()
+        .addInterceptor(noInternetConnectionInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(apiKeyInterceptor)
         .build()
