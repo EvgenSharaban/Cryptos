@@ -1,39 +1,27 @@
 package com.example.cryptos.data.local.room
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.AutoMigrationSpec
 import com.example.cryptos.data.local.room.entities.CoinRoomEntity
 import com.example.cryptos.data.local.room.entities.UserProfileEntity
 
 @Database(
     entities = [CoinRoomEntity::class, UserProfileEntity::class],
-    autoMigrations = [
-        AutoMigration(
-            from = 1,
-            to = 2,
-            spec = DataBase.MyAutoMigration::class
-        ),
-        AutoMigration(
-            from = 2,
-            to = 3,
-            spec = DataBase.MyAutoMigration::class
-        ),
-        AutoMigration(
-            from = 3,
-            to = 4,
-            spec = DataBase.MyAutoMigration::class
-        )
-    ],
-    version = 4,
+//    autoMigrations = [
+//        AutoMigration(
+//            from = 1,
+//            to = 2,
+//            spec = DataBase.MyAutoMigration::class
+//        )
+//    ],
+    version = 1,
     exportSchema = true
 )
 abstract class DataBase : RoomDatabase() {
 
-    class MyAutoMigration : AutoMigrationSpec
+//    class MyAutoMigration : AutoMigrationSpec
 
     abstract fun coinsDao(): CoinsDao
     abstract fun userProfileDao(): UserProfileDao
@@ -57,7 +45,9 @@ abstract class DataBase : RoomDatabase() {
                 context.applicationContext,
                 DataBase::class.java,
                 DATABASE_NAME
-            ).build()
+            )
+//                .fallbackToDestructiveMigration(true)
+                .build()
         }
     }
 }

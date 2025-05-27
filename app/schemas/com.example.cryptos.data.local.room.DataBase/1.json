@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c77e7244795d71cf694d1fdd7b38c648",
+    "identityHash": "dd366c8b1aa166e33bfd244dc30964f8",
     "entities": [
       {
         "tableName": "coins",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `rank` TEXT NOT NULL, `symbol` TEXT NOT NULL, `name` TEXT NOT NULL, `supply` TEXT NOT NULL, `maxSupply` TEXT NOT NULL, `marketCapUsd` TEXT NOT NULL, `volumeUsd24Hr` TEXT NOT NULL, `priceUsd` TEXT NOT NULL, `changePercent24Hr` TEXT NOT NULL, `vwap24Hr` TEXT NOT NULL, `explorer` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `rank` TEXT NOT NULL, `symbol` TEXT NOT NULL, `name` TEXT NOT NULL, `supply` TEXT NOT NULL, `maxSupply` TEXT NOT NULL, `marketCapUsd` TEXT NOT NULL, `volumeUsd24Hr` TEXT NOT NULL, `priceUsd` TEXT NOT NULL, `changePercent24Hr` TEXT NOT NULL, `vwap24Hr` TEXT NOT NULL, `explorer` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -79,6 +79,54 @@
             "columnName": "explorer",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "user_profiles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `bio` TEXT NOT NULL, `avatarUri` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bio",
+            "columnName": "bio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatarUri",
+            "columnName": "avatarUri",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -91,7 +139,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c77e7244795d71cf694d1fdd7b38c648')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dd366c8b1aa166e33bfd244dc30964f8')"
     ]
   }
 }

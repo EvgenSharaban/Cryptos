@@ -87,7 +87,8 @@ class EditProfileViewModel @Inject constructor(
                 Log.d(TAG, "EditProfileViewModel processAndSaveImage: uri = $savedUri")
                 savedUri?.let {
                     val uriString = it.toString()
-                    ImageUtil.saveProfileImageUriString(context, uriString)
+                    // TODO remove after check if it doesn't need
+//                    ImageUtil.saveProfileImageUriString(context, uriString)
                     onComplete(uriString)
                 } ?: onComplete(null)
             } catch (e: Exception) {
