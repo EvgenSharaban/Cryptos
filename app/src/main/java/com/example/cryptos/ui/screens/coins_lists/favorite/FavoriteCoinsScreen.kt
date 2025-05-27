@@ -11,7 +11,7 @@ import com.example.cryptos.R
 import com.example.cryptos.ui.scaffold.AppScaffold
 import com.example.cryptos.ui.scaffold.environment.FavoriteGraph.FavoriteCoinDetailsRoute
 import com.example.cryptos.ui.screens.LocalNavController
-import com.example.cryptos.ui.screens.coins_lists.ItemsContent
+import com.example.cryptos.ui.screens.coins_lists.ItemsListContent
 
 @Composable
 fun FavoriteCoinsScreen() {
@@ -23,7 +23,7 @@ fun FavoriteCoinsScreen() {
         title = stringResource(R.string.favorite_coins_screen),
         showNavigationUp = false,
     ) { paddingValues ->
-        ItemsContent(
+        ItemsListContent(
             getLoadResult = { screenState.value },
             onItemClicked = { id ->
                 navController.navigate(route = FavoriteCoinDetailsRoute(id))

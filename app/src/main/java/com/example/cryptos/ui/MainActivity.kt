@@ -21,7 +21,8 @@ import com.example.cryptos.ui.screens.LocalNavController
 import com.example.cryptos.ui.screens.coindetails.CoinDetailsScreen
 import com.example.cryptos.ui.screens.coins_lists.favorite.FavoriteCoinsScreen
 import com.example.cryptos.ui.screens.coins_lists.home.HomeScreen
-import com.example.cryptos.ui.screens.profile.ProfileScreen
+import com.example.cryptos.ui.screens.profile.profile.ProfileScreen
+import com.example.cryptos.ui.screens.profile.edit_profile.EditProfileScreen
 import com.example.cryptos.ui.theme.CryptosTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,6 +69,7 @@ fun NavApp() {
             }
             navigation<ProfileGraph>(startDestination = ProfileGraph.ProfileRoute) {
                 composable<ProfileGraph.ProfileRoute> { ProfileScreen() }
+                composable<ProfileGraph.EditProfileRoute> { EditProfileScreen() }
             }
         }
     }

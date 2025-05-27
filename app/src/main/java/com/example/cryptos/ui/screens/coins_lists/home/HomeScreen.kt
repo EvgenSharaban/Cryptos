@@ -19,9 +19,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cryptos.R
 import com.example.cryptos.ui.scaffold.AppScaffold
 import com.example.cryptos.ui.scaffold.environment.CoinsGraph.CoinDetailsRoute
+import com.example.cryptos.ui.screens.Events.MessageForUser
 import com.example.cryptos.ui.screens.LocalNavController
-import com.example.cryptos.ui.screens.coins_lists.EventsForCoinsLists.MessageForUser
-import com.example.cryptos.ui.screens.coins_lists.ItemsContent
+import com.example.cryptos.ui.screens.coins_lists.ItemsListContent
 
 @Composable
 fun HomeScreen() {
@@ -45,7 +45,7 @@ fun HomeScreen() {
         title = stringResource(R.string.coins_screen),
         showNavigationUp = false
     ) { paddingValues ->
-        ItemsContent(
+        ItemsListContent(
             getLoadResult = { screenState.value },
             onItemClicked = { id ->
                 navController.navigate(route = CoinDetailsRoute(id))
@@ -73,7 +73,7 @@ fun HomeScreen() {
                 Button(
                     onClick = {
                         // delayTime need for displaying progress bar, but can do without it
-                        viewModel.fetchCoins(500)
+                        viewModel.fetchCoins(300)
                         userMessage = null
                     }
                 ) {

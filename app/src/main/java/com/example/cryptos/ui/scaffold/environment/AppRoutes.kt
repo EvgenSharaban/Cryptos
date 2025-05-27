@@ -36,6 +36,9 @@ data object ProfileGraph {
     @Serializable
     data object ProfileRoute
 
+    @Serializable
+    data object EditProfileRoute
+
 }
 
 

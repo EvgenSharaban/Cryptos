@@ -121,6 +121,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.collections.immutable)
 
+    // Material Icons Extended
+    implementation(libs.androidx.material.icons.extended)
+
     // retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -131,9 +134,7 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     // coil
-    implementation(libs.coil)
     implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
 
     // room
     implementation(libs.androidx.room.runtime)

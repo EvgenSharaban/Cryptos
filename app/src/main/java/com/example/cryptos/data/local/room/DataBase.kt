@@ -7,9 +7,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import com.example.cryptos.data.local.room.entities.CoinRoomEntity
+import com.example.cryptos.data.local.room.entities.UserProfileEntity
 
 @Database(
-    entities = [CoinRoomEntity::class],
+    entities = [CoinRoomEntity::class, UserProfileEntity::class],
     autoMigrations = [
         AutoMigration(
             from = 1,
@@ -20,9 +21,14 @@ import com.example.cryptos.data.local.room.entities.CoinRoomEntity
             from = 2,
             to = 3,
             spec = DataBase.MyAutoMigration::class
+        ),
+        AutoMigration(
+            from = 3,
+            to = 4,
+            spec = DataBase.MyAutoMigration::class
         )
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class DataBase : RoomDatabase() {
@@ -30,6 +36,7 @@ abstract class DataBase : RoomDatabase() {
     class MyAutoMigration : AutoMigrationSpec
 
     abstract fun coinsDao(): CoinsDao
+    abstract fun userProfileDao(): UserProfileDao
 
     companion object {
         private const val DATABASE_NAME = "coins.db"

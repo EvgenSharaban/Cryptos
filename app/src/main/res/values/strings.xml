@@ -2,6 +2,7 @@
     <string name="app_name">Cryptos</string>
 
     <string name="profile_screen">Profile</string>
+    <string name="edit_profile_screen">Edit Profile</string>
     <string name="coins_screen">Coins</string>
     <string name="coin_details_screen">Coin details</string>
     <string name="favorite_coins_screen">Watchlist</string>
@@ -30,4 +31,6 @@
     <string name="add_to_favorites">Add to favorites</string>
     <string name="arrow_up">▲</string>
     <string name="arrow_down">▼</string>
+    <string name="profile_image_jpg">profile_image.jpg</string>
+    <string name="save_profile">Save Profile</string>
 </resources>

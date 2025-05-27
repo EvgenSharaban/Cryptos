@@ -9,7 +9,7 @@ import com.example.cryptos.ui.components.LoadResultContent
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 
 @Composable
-fun ItemsContent(
+fun ItemsListContent(
     getLoadResult: () -> LoadResult<CoinsListScreenState>,
     onItemClicked: (String) -> Unit,
     onFavoriteClicked: (String) -> Unit,

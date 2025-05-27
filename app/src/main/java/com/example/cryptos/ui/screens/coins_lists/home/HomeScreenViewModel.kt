@@ -6,8 +6,8 @@ import com.example.cryptos.R
 import com.example.cryptos.domain.repositories.CoinsRepository
 import com.example.cryptos.ui.components.LoadResult
 import com.example.cryptos.ui.components.NoInternetException
+import com.example.cryptos.ui.screens.Events
 import com.example.cryptos.ui.screens.base.BaseViewModel
-import com.example.cryptos.ui.screens.coins_lists.EventsForCoinsLists
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListItemUiMapper.mapToUiList
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ class HomeScreenViewModel @Inject constructor(
     private var _stateFlow = MutableStateFlow<LoadResult<CoinsListScreenState>>(LoadResult.Loading)
     val stateFlow: StateFlow<LoadResult<CoinsListScreenState>> = _stateFlow.asStateFlow()
 
-    private val _event = Channel<EventsForCoinsLists>(Channel.BUFFERED)
+    private val _event = Channel<Events>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
 
     init {
@@ -55,7 +55,7 @@ class HomeScreenViewModel @Inject constructor(
                     ""
                 }
                 _event.trySend(
-                    EventsForCoinsLists.MessageForUser(
+                    Events.MessageForUser(
                         messageTitle = title,
                         messageDescription = description
                     )

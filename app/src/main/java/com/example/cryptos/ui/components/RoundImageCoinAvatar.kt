@@ -1,5 +1,6 @@
 package com.example.cryptos.ui.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -11,12 +12,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil3.Bitmap
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.transformations
-import coil3.size.Size
-import coil3.transform.Transformation
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Size
+import coil.transform.Transformation
 import com.example.cryptos.R
 
 @Composable
@@ -44,7 +43,7 @@ fun RoundImageCoinAvatar(
     }
 }
 
-private class TrimBottomPaddingTransformation : Transformation() {
+private class TrimBottomPaddingTransformation : Transformation {
     override val cacheKey: String
         get() = "TrimPaddingTransformation"
 
