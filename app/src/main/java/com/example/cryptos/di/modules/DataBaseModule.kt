@@ -30,12 +30,6 @@ object DataBaseModule {
 
     @Provides
     @Singleton
-    fun provideUserProfileRepository(userProfileDao: UserProfileDao): UserProfileRepository {
-        return UserProfileRepositoryImpl(userProfileDao)
-    }
-
-    @Provides
-    @Singleton
     fun provideUserProfileDao(db: DataBase): UserProfileDao {
         return db.userProfileDao()
     }

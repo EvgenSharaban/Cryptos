@@ -1,5 +1,7 @@
 package com.example.cryptos.di.modules
 
+import com.example.cryptos.data.local.room.UserProfileDao
+import com.example.cryptos.data.repositories.UserProfileRepositoryImpl
 import com.example.cryptos.domain.repositories.UserProfileRepository
 import com.example.cryptos.domain.usecases.profile.GetUserProfileUseCase
 import com.example.cryptos.domain.usecases.profile.ProfileUseCases
@@ -12,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UseCaseModule {
+object ProfileModule {
     @Provides
     @Singleton
     fun provideGetUserProfileUseCase(repository: UserProfileRepository): GetUserProfileUseCase {
@@ -35,5 +37,11 @@ object UseCaseModule {
             getUserProfile = getUserProfileUseCase,
             updateUserProfile = updateUserProfileUseCase
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserProfileRepository(userProfileDao: UserProfileDao): UserProfileRepository {
+        return UserProfileRepositoryImpl(userProfileDao)
     }
 }
