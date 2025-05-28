@@ -134,7 +134,7 @@ fun ProfileScreen() {
                 TextButton(
                     onClick = { userMessage = null }
                 ) {
-                    Text(stringResource(R.string.cansel))
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -209,7 +209,7 @@ private fun ProfileContent(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "About Me",
+                    text = stringResource(R.string.about_me),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

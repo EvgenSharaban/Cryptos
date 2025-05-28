@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -76,8 +77,13 @@ class EditProfileViewModel @Inject constructor(
         updateState { it.copy(bio = bio) }
     }
 
-    fun onAvatarUriChange(uri: String?) {
-        updateState { it.copy(avatarUri = uri) }
+    fun onAvatarUriChange(uri: String? = null) {
+        val avatarUri = if (uri.isNullOrEmpty()) {
+            "https://i.pravatar.cc/300?u=${UUID.randomUUID()}"
+        } else {
+            uri
+        }
+        updateState { it.copy(avatarUri = avatarUri) }
     }
 
     fun processAndSaveImage(context: Context, uri: Uri, onComplete: (String?) -> Unit) {

@@ -65,7 +65,6 @@ import com.example.cryptos.ui.components.LoadResultContent
 import com.example.cryptos.ui.scaffold.AppScaffold
 import com.example.cryptos.ui.screens.Events.MessageForUser
 import com.example.cryptos.ui.screens.LocalNavController
-import java.util.UUID
 
 @Composable
 fun EditProfileScreen() {
@@ -157,7 +156,7 @@ fun EditProfileScreen() {
     if (showImageSourceDialog.value) {
         AlertDialog(
             onDismissRequest = { showImageSourceDialog.value = false },
-            title = { Text("Select Image Source") },
+            title = { Text(stringResource(R.string.select_image_source)) },
             text = {
                 Column {
                     TextButton(
@@ -167,24 +166,24 @@ fun EditProfileScreen() {
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Gallery")
+                        Text(stringResource(R.string.gallery))
                     }
 
                     TextButton(
                         onClick = {
-                            viewModel.onAvatarUriChange("https://i.pravatar.cc/300?u=${UUID.randomUUID()}")
+                            viewModel.onAvatarUriChange()
                             showImageSourceDialog.value = false
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Random from Internet")
+                        Text(stringResource(R.string.random_from_internet))
                     }
                 }
             },
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showImageSourceDialog.value = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -213,7 +212,7 @@ fun EditProfileScreen() {
                 TextButton(
                     onClick = { userMessage = null }
                 ) {
-                    Text(stringResource(R.string.cansel))
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -263,7 +262,7 @@ fun EditProfileContent(
                         .data(state.avatarUri)
                         .crossfade(true)
                         .build(),
-                    contentDescription = "Profile Image",
+                    contentDescription = stringResource(R.string.profile_image),
                     error = painterResource(R.drawable.ic_broken_image),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -271,7 +270,7 @@ fun EditProfileContent(
             } else {
                 Icon(
                     imageVector = Icons.Default.Person,
-                    contentDescription = "Profile Image",
+                    contentDescription = stringResource(R.string.profile_image),
                     modifier = Modifier.size(60.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -301,7 +300,7 @@ fun EditProfileContent(
         OutlinedTextField(
             value = state.username,
             onValueChange = onUsernameChange,
-            label = { Text("Username") },
+            label = { Text(stringResource(R.string.user_name)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -319,7 +318,7 @@ fun EditProfileContent(
         OutlinedTextField(
             value = state.email,
             onValueChange = onEmailChange,
-            label = { Text("Email Address") },
+            label = { Text(stringResource(R.string.email_address)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -337,7 +336,7 @@ fun EditProfileContent(
         OutlinedTextField(
             value = state.bio,
             onValueChange = onBioChange,
-            label = { Text("About Me") },
+            label = { Text(stringResource(R.string.about_me)) },
             modifier = Modifier.fillMaxWidth(),
             minLines = 4,
             maxLines = 40,

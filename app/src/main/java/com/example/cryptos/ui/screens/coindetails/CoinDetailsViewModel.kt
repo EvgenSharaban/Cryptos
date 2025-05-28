@@ -1,10 +1,10 @@
 package com.example.cryptos.ui.screens.coindetails
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cryptos.domain.repositories.CoinsRepository
 import com.example.cryptos.ui.components.LoadResult
-import com.example.cryptos.ui.screens.base.BaseViewModel
 import com.example.cryptos.ui.screens.coindetails.models.DetailsUiMapper.mapToUi
 import com.example.cryptos.ui.screens.coindetails.models.DetailsUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class CoinDetailsViewModel @Inject constructor(
     val coinsRepository: CoinsRepository,
     savedStateHandle: SavedStateHandle,
-) : BaseViewModel() {
+) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow<LoadResult<ScreenState>>(LoadResult.Loading)
     val stateFlow: StateFlow<LoadResult<ScreenState>> = _stateFlow.asStateFlow()

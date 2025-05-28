@@ -1,10 +1,10 @@
 package com.example.cryptos.ui.screens.coins_lists.favorite
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cryptos.R
 import com.example.cryptos.domain.repositories.CoinsRepository
 import com.example.cryptos.ui.components.LoadResult
-import com.example.cryptos.ui.screens.base.BaseViewModel
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListItemUiMapper.mapToUiList
 import com.example.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoriteCoinsViewModel @Inject constructor(
     val coinsRepository: CoinsRepository,
-) : BaseViewModel() {
+) : ViewModel() {
 
     val stateFlow: StateFlow<LoadResult<CoinsListScreenState>> = coinsRepository.favoriteCoinsLocal
         .map {

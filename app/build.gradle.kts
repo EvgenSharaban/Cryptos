@@ -20,10 +20,6 @@ val apiToken = configProperties.getProperty("api.token") ?: throw GradleExceptio
     "API token not found in local.properties. Please define 'api.token'."
 )
 
-val baseURL = configProperties.getProperty("base.url") ?: throw GradleException(
-    "Base URL not found in local.properties. Please define 'base.url'."
-)
-
 android {
     namespace = "com.example.cryptos"
     compileSdk = 35
@@ -38,7 +34,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "API_TOKEN", "\"${apiToken}\"")
-        buildConfigField("String", "BASE_URL", "\"${baseURL}\"")
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")

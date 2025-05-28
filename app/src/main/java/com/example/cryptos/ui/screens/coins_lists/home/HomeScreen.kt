@@ -84,7 +84,7 @@ fun HomeScreen() {
                 TextButton(
                     onClick = { userMessage = null }
                 ) {
-                    Text(stringResource(R.string.cansel))
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
