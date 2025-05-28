@@ -21,11 +21,11 @@ val apiToken = configProperties.getProperty("api.token") ?: throw GradleExceptio
 )
 
 android {
-    namespace = "com.example.cryptos"
+    namespace = "com.jeksonsoftsolutions.cryptos"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.cryptos"
+        applicationId = "com.jeksonsoftsolutions.cryptos"
         minSdk = 28
         targetSdk = 35
         versionCode = 1
