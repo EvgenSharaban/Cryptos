@@ -33,8 +33,6 @@ import com.jeksonsoftsolutions.cryptos.ui.components.LoadResultContent
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.AppScaffold
 import com.jeksonsoftsolutions.cryptos.ui.screens.coindetails.models.DetailsUiModel
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.PercentageChangeText
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun CoinDetailsScreen() {
@@ -123,17 +121,13 @@ private fun ContentItem(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DataRow(stringResource(R.string.market_cap), formatCurrency(coin.marketCap))
+                DataRow(stringResource(R.string.market_cap), coin.formattedMarketCap)
                 DataRow(stringResource(R.string.supply), "${coin.supply}")
-                DataRow(stringResource(R.string._24h_volume), formatCurrency(coin.volumeUsd24Hr))
+                DataRow(stringResource(R.string._24h_volume), coin.formattedVolumeUsd24Hr)
                 DataRow(stringResource(R.string.symbol), coin.symbol)
             }
         }
     }
-}
-
-private fun formatCurrency(value: Double): String {
-    return NumberFormat.getCurrencyInstance(Locale.US).format(value)
 }
 
 

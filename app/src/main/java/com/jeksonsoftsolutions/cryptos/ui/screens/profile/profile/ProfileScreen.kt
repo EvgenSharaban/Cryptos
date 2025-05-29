@@ -25,12 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,11 +53,11 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 @Composable
 fun ProfileScreen() {
     val viewModel: ProfileViewModel = hiltViewModel()
-    val state = viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
+    val event by viewModel.event.collectAsState()
+
     val navController = LocalNavController.current
     val lifecycleOwner = LocalLifecycleOwner.current
-
-    var userMessage by remember { mutableStateOf<MessageForUser?>(null) }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -70,20 +66,7 @@ fun ProfileScreen() {
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
-    LaunchedEffect(viewModel.event) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is MessageForUser -> {
-                    userMessage = MessageForUser(event.messageTitle, event.messageDescription)
-                }
-            }
-        }
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     AppScaffold(
@@ -100,7 +83,7 @@ fun ProfileScreen() {
         },
     ) { paddingValues ->
         LoadResultContent(
-            loadResult = state.value,
+            loadResult = state,
             content = { profileState ->
                 ProfileContent(
                     state = profileState,
@@ -110,34 +93,37 @@ fun ProfileScreen() {
         )
     }
 
-    if (userMessage != null) {
-        AlertDialog(
-            onDismissRequest = { userMessage = null },
-            title = { Text(userMessage?.messageTitle ?: stringResource(R.string.unknown_error)) },
-            text = {
-                if (userMessage?.messageDescription?.isNotEmpty() == true) {
-                    Text(userMessage?.messageDescription ?: stringResource(R.string.unknown_error))
-                }
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        // delayTime need for displaying progress bar, but can do without it
-                        viewModel.loadUserProfile()
-                        userMessage = null
+    event?.let { event ->
+        when (event) {
+            is MessageForUser -> {
+                AlertDialog(
+                    onDismissRequest = { viewModel.clearEvent() },
+                    title = { Text(event.messageTitle) },
+                    text = {
+                        if (event.messageDescription.isNotEmpty()) {
+                            Text(event.messageDescription)
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.loadUserProfile()
+                                viewModel.clearEvent()
+                            }
+                        ) {
+                            Text(stringResource(R.string.try_again))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { viewModel.clearEvent() }
+                        ) {
+                            Text(stringResource(R.string.cancel))
+                        }
                     }
-                ) {
-                    Text(stringResource(R.string.try_again))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { userMessage = null }
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
+                )
             }
-        )
+        }
     }
 }
 

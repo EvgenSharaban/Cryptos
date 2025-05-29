@@ -38,7 +38,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,21 +68,11 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 @Composable
 fun EditProfileScreen() {
     val viewModel: EditProfileViewModel = hiltViewModel()
-    val state = viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
+    val event by viewModel.event.collectAsState()
+
     val navController = LocalNavController.current
     val context = LocalContext.current
-
-    var userMessage by remember { mutableStateOf<MessageForUser?>(null) }
-
-    LaunchedEffect(viewModel.event) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is MessageForUser -> {
-                    userMessage = MessageForUser(event.messageTitle, event.messageDescription)
-                }
-            }
-        }
-    }
 
     val showImageSourceDialog = remember { mutableStateOf(false) }
     var isImageLoading by remember { mutableStateOf(false) }
@@ -136,7 +125,7 @@ fun EditProfileScreen() {
         }
     ) { paddingValues ->
         LoadResultContent(
-            loadResult = state.value,
+            loadResult = state,
             content = { editProfile ->
                 EditProfileContent(
                     state = editProfile,
@@ -189,33 +178,29 @@ fun EditProfileScreen() {
         )
     }
 
-    if (userMessage != null) {
-        AlertDialog(
-            onDismissRequest = { userMessage = null },
-            title = { Text(userMessage?.messageTitle ?: stringResource(R.string.unknown_error)) },
-            text = {
-                if (userMessage?.messageDescription?.isNotEmpty() == true) {
-                    Text(userMessage?.messageDescription ?: stringResource(R.string.unknown_error))
-                }
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.loadUserProfile()
-                        userMessage = null
-                    }
-                ) {
-                    Text(stringResource(R.string.try_again))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { userMessage = null }
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
+    event?.let { event ->
+        when (event) {
+            is MessageForUser -> {
+                AlertDialog(
+                    onDismissRequest = { viewModel.clearEvent() },
+                    title = { Text(event.messageTitle) },
+                    text = {
+                        if (event.messageDescription.isNotEmpty()) {
+                            Text(event.messageDescription)
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.clearEvent()
+                            }
+                        ) {
+                            Text(stringResource(R.string.try_again))
+                        }
+                    },
+                )
             }
-        )
+        }
     }
 }
 

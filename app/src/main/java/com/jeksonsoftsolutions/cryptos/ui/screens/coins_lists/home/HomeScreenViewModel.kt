@@ -12,13 +12,11 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListIt
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,12 +30,12 @@ class HomeScreenViewModel @Inject constructor(
     private var _stateFlow = MutableStateFlow<LoadResult<CoinsListScreenState>>(LoadResult.Loading)
     val stateFlow: StateFlow<LoadResult<CoinsListScreenState>> = _stateFlow.asStateFlow()
 
-    private val _event = Channel<Events>(Channel.BUFFERED)
-    val event = _event.receiveAsFlow()
+    private val _event = MutableStateFlow<Events?>(null)
+    val event = _event.asStateFlow()
 
     init {
         initiateCacheData()
-//        fetchCoins()
+        fetchCoins()
     }
 
     fun fetchCoins(delayTime: Long? = null) {
@@ -54,12 +52,12 @@ class HomeScreenViewModel @Inject constructor(
                 } else {
                     ""
                 }
-                _event.trySend(
+                _event.update {
                     Events.MessageForUser(
                         messageTitle = title,
                         messageDescription = description
                     )
-                )
+                }
                 _stateFlow.value = LoadResult.Success(CoinsListScreenState(coinsLocalList.mapToUiList()))
             }
         }
@@ -69,6 +67,10 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             coinsRepository.toggleFavorite(coinId)
         }
+    }
+
+    fun clearEvent() {
+        _event.update { null }
     }
 
     private fun initiateCacheData() {

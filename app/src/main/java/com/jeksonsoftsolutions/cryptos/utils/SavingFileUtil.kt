@@ -7,7 +7,7 @@ import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 
-object ImageUtil {
+object SavingFileUtil {
     /**
      * Save an image from Uri to app-specific storage or shared storage
      * Returns a Uri that can be stored and used later
@@ -19,11 +19,28 @@ object ImageUtil {
             val bitmap = BitmapFactory.decodeStream(inputStream)
             inputStream.close()
 
-            return saveImageToInternalStorage(context, bitmap, "profile_image.jpg")
+            return saveImageToInternalStorage(context, bitmap)
         } catch (e: Exception) {
             e.printStackTrace()
             return null
         }
+    }
+
+    /**
+     * For older Android versions, save to internal app storage
+     */
+    private fun saveImageToInternalStorage(context: Context, bitmap: Bitmap): Uri {
+        val directory = File(context.filesDir, "profile_images")
+        if (!directory.exists()) {
+            directory.mkdir()
+        }
+
+        val file = File(directory, "profile_image.jpg")
+        FileOutputStream(file).use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+        }
+
+        return Uri.fromFile(file)
     }
 
 //    /**
@@ -63,23 +80,6 @@ object ImageUtil {
 //        }
 //        return uri
 //    }
-
-    /**
-     * For older Android versions, save to internal app storage
-     */
-    private fun saveImageToInternalStorage(context: Context, bitmap: Bitmap, fileName: String): Uri {
-        val directory = File(context.filesDir, "profile_images")
-        if (!directory.exists()) {
-            directory.mkdir()
-        }
-
-        val file = File(directory, fileName)
-        FileOutputStream(file).use { outputStream ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-        }
-
-        return Uri.fromFile(file)
-    }
 
 //    /**
 //     * For file name from Uri
