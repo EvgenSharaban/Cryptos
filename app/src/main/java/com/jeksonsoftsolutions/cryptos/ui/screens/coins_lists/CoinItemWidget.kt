@@ -135,11 +135,10 @@ fun PercentageChangeText(value: Double) {
 
 private fun safeCastStringToDouble(value: String): Double {
     try {
-        val castingValue = value.toDouble()
-        return castingValue
-    } catch (e: Throwable) {
+        return value.toDouble()
+    } catch (e: Exception) {
         Log.e(TAG, "safeCastStringToDouble: error = $e")
-        throw e
+        return 0.0
     }
 }
 
