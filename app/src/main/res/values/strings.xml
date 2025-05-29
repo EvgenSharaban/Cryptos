@@ -19,7 +19,6 @@
     <string name="network_unavailable_error">Network unavailable</string>
     <string name="connect_to_internet_and_try_again">Connect to the internet and try again</string>
 
-    <string name="logo_sample">https://assets.coincap.io/assets/icons/%1$s@2x.png</string>
     <string name="price_value">$%1$s</string>
     <string name="symbol">Symbol</string>
     <string name="_24h_volume">24h Volume</string>

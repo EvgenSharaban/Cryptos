@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -28,7 +27,7 @@ fun RoundImageCoinAvatar(
         elevation = CardDefaults.cardElevation(0.dp),
         modifier = modifier
     ) {
-        val logoUrl = stringResource(R.string.logo_sample, logo.lowercase())
+        val logoUrl = String.format(LOGO_URL_FORMATTER, logo.lowercase())
 
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -58,3 +57,5 @@ private class TrimBottomPaddingTransformation : Transformation {
         return Bitmap.createBitmap(input, 0, trimTop, width, newHeight)
     }
 }
+
+private const val LOGO_URL_FORMATTER = "https://assets.coincap.io/assets/icons/%s@2x.png"

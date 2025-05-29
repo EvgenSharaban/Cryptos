@@ -16,9 +16,7 @@ if (localPropertiesFile.exists()) {
     configProperties.load(localPropertiesFile.inputStream())
 }
 
-val apiToken = configProperties.getProperty("api.token") ?: throw GradleException(
-    "API token not found in local.properties. Please define 'api.token'."
-)
+val apiToken = configProperties.getProperty("api.token") ?: "API token not found in local.properties. Please define 'api.token"
 
 android {
     namespace = "com.jeksonsoftsolutions.cryptos"
