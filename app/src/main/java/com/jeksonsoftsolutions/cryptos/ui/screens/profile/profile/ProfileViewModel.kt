@@ -28,30 +28,32 @@ class ProfileViewModel @Inject constructor(
     private val _state = MutableStateFlow<LoadResult<ProfileState>>(LoadResult.Loading)
     val state: StateFlow<LoadResult<ProfileState>> = _state.asStateFlow()
 
-    private val _event = MutableStateFlow<Events?>(null)
+    private val _event = MutableStateFlow<Events>(Events.None)
     val event = _event.asStateFlow()
 
     fun loadUserProfile() {
         viewModelScope.launch {
-            _state.value = LoadResult.Loading
+            _state.update { LoadResult.Loading }
             _event.handleNetConnectionError(
                 context = context,
                 checkInternet = { checkConnectionUseCase.isConnectedToNetwork() }
             )
             val userProfile = profileUseCases.getUserProfile().first()
-            _state.value = LoadResult.Success(
-                ProfileState(
-                    username = userProfile.username,
-                    email = userProfile.email,
-                    bio = userProfile.bio,
-                    avatarUri = userProfile.avatarUri
+            _state.update {
+                LoadResult.Success(
+                    ProfileState(
+                        username = userProfile.username,
+                        email = userProfile.email,
+                        bio = userProfile.bio,
+                        avatarUri = userProfile.avatarUri
+                    )
                 )
-            )
+            }
         }
     }
 
     fun clearEvent() {
-        _event.update { null }
+        _event.update { Events.None }
     }
 }
 

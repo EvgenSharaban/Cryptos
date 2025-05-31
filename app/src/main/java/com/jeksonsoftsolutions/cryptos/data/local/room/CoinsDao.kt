@@ -28,4 +28,7 @@ interface CoinsDao {
     @Query("UPDATE coins SET isFavorite = :isFavorite WHERE id = :coinId")
     suspend fun updateFavoriteStatus(coinId: String, isFavorite: Boolean)
 
+    @Query("UPDATE coins SET isFavorite = 1 WHERE id IN (:coinIds)")
+    suspend fun updateFavoriteStatusBatch(coinIds: List<String>)
+
 }

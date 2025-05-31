@@ -5,4 +5,6 @@ sealed interface Events {
         val messageTitle: String,
         val messageDescription: String,
     ) : Events
+
+    data object None : Events
 }

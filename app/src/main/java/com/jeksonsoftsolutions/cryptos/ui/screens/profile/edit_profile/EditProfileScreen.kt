@@ -43,7 +43,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +61,7 @@ import com.jeksonsoftsolutions.cryptos.R
 import com.jeksonsoftsolutions.cryptos.core.other.TAG
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResultContent
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.AppScaffold
+import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events.MessageForUser
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 
@@ -70,25 +70,20 @@ fun EditProfileScreen() {
     val viewModel: EditProfileViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
     val event by viewModel.event.collectAsState()
+    val isImageLoading by viewModel.isImageLoading.collectAsState()
 
     val navController = LocalNavController.current
     val context = LocalContext.current
 
     val showImageSourceDialog = remember { mutableStateOf(false) }
-    var isImageLoading by remember { mutableStateOf(false) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            isImageLoading = true
+            viewModel.setLoadingImageState()
             Log.d(TAG, "EditProfileViewModel EditProfileScreen savedUri = $it ")
-            viewModel.processAndSaveImage(context, it) { savedUri ->
-                savedUri?.let { uriString ->
-                    viewModel.onAvatarUriChange(uriString)
-                }
-                isImageLoading = false
-            }
+            viewModel.processAndSaveImage(context, it)
         }
     }
 
@@ -178,29 +173,29 @@ fun EditProfileScreen() {
         )
     }
 
-    event?.let { event ->
-        when (event) {
-            is MessageForUser -> {
-                AlertDialog(
-                    onDismissRequest = { viewModel.clearEvent() },
-                    title = { Text(event.messageTitle) },
-                    text = {
-                        if (event.messageDescription.isNotEmpty()) {
-                            Text(event.messageDescription)
+    when (event) {
+        is MessageForUser -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.clearEvent() },
+                title = { Text((event as MessageForUser).messageTitle) },
+                text = {
+                    if ((event as MessageForUser).messageDescription.isNotEmpty()) {
+                        Text((event as MessageForUser).messageDescription)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.clearEvent()
                         }
-                    },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                viewModel.clearEvent()
-                            }
-                        ) {
-                            Text(stringResource(R.string.try_again))
-                        }
-                    },
-                )
-            }
+                    ) {
+                        Text(stringResource(R.string.try_again))
+                    }
+                },
+            )
         }
+
+        Events.None -> {}
     }
 }
 

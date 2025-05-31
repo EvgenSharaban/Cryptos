@@ -30,7 +30,7 @@ class HomeScreenViewModel @Inject constructor(
     private var _stateFlow = MutableStateFlow<LoadResult<CoinsListScreenState>>(LoadResult.Loading)
     val stateFlow: StateFlow<LoadResult<CoinsListScreenState>> = _stateFlow.asStateFlow()
 
-    private val _event = MutableStateFlow<Events?>(null)
+    private val _event = MutableStateFlow<Events>(Events.None)
     val event = _event.asStateFlow()
 
     init {
@@ -40,7 +40,7 @@ class HomeScreenViewModel @Inject constructor(
 
     fun fetchCoins(delayTime: Long? = null) {
         viewModelScope.launch {
-            _stateFlow.value = LoadResult.Loading
+            _stateFlow.update { LoadResult.Loading }
             if (delayTime != null && delayTime > 0) delay(delayTime)
             coinsRepository.fetchCoins().onFailure { exception ->
                 // TODO if LoadResult.Error doesn't need delete it and everything connected with it
@@ -58,7 +58,7 @@ class HomeScreenViewModel @Inject constructor(
                         messageDescription = description
                     )
                 }
-                _stateFlow.value = LoadResult.Success(CoinsListScreenState(coinsLocalList.mapToUiList()))
+                _stateFlow.update { LoadResult.Success(CoinsListScreenState(coinsLocalList.mapToUiList())) }
             }
         }
     }
@@ -70,7 +70,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun clearEvent() {
-        _event.update { null }
+        _event.update { Events.None }
     }
 
     private fun initiateCacheData() {

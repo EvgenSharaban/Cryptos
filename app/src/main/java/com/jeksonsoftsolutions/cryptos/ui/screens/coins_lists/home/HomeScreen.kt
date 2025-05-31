@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jeksonsoftsolutions.cryptos.R
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.AppScaffold
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.environment.CoinsGraph.CoinDetailsRoute
+import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events.MessageForUser
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.ItemsListContent
@@ -46,38 +47,39 @@ fun HomeScreen() {
         )
     }
 
-    event?.let { event ->
-        when (event) {
-            is MessageForUser -> {
-                AlertDialog(
-                    onDismissRequest = { viewModel.clearEvent() },
-                    title = { Text(event.messageTitle) },
-                    text = {
-                        if (event.messageDescription.isNotEmpty()) {
-                            Text(event.messageDescription)
-                        }
-                    },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                // delayTime need for displaying progress bar, but can do without it
-                                viewModel.fetchCoins(300)
-                                viewModel.clearEvent()
-                            }
-                        ) {
-                            Text(stringResource(R.string.try_again))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { viewModel.clearEvent() }
-                        ) {
-                            Text(stringResource(R.string.cancel))
-                        }
+
+    when (event) {
+        is MessageForUser -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.clearEvent() },
+                title = { Text((event as MessageForUser).messageTitle) },
+                text = {
+                    if ((event as MessageForUser).messageDescription.isNotEmpty()) {
+                        Text((event as MessageForUser).messageDescription)
                     }
-                )
-            }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            // delayTime need for displaying progress bar, but can do without it
+                            viewModel.fetchCoins(300)
+                            viewModel.clearEvent()
+                        }
+                    ) {
+                        Text(stringResource(R.string.try_again))
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { viewModel.clearEvent() }
+                    ) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
         }
+
+        Events.None -> {}
     }
 
 }

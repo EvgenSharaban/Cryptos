@@ -17,6 +17,7 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.utils.handleNetConnectionError
 import com.jeksonsoftsolutions.cryptos.utils.SavingFileUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,8 +37,11 @@ class EditProfileViewModel @Inject constructor(
     private val _state = MutableStateFlow<LoadResult<EditProfileState>>(LoadResult.Loading)
     val state: StateFlow<LoadResult<EditProfileState>> = _state.asStateFlow()
 
-    private val _event = MutableStateFlow<Events?>(null)
+    private val _event = MutableStateFlow<Events>(Events.None)
     val event = _event.asStateFlow()
+
+    private val _isImageLoading = MutableStateFlow(false)
+    val isImageLoading = _isImageLoading.asStateFlow()
 
     init {
         loadUserProfile()
@@ -45,7 +49,7 @@ class EditProfileViewModel @Inject constructor(
 
     fun loadUserProfile() {
         viewModelScope.launch {
-            _state.value = LoadResult.Loading
+            _state.update { LoadResult.Loading }
             val userProfile = profileUseCases.getUserProfile().first()
             _state.update {
                 LoadResult.Success(
@@ -74,21 +78,19 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun onAvatarUriChange(uri: String? = null) {
-        viewModelScope.launch {
-            val avatarUri = if (uri.isNullOrEmpty()) {
-                "https://i.pravatar.cc/300?u=${UUID.randomUUID()}"
-            } else {
-                uri
-            }
-            _event.handleNetConnectionError(context) {
-                checkConnectionUseCase.isConnectedToNetwork()
-            }
-            updateState { it.copy(avatarUri = avatarUri) }
+        val avatarUri = if (uri.isNullOrEmpty()) {
+            "https://i.pravatar.cc/300?u=${UUID.randomUUID()}"
+        } else {
+            uri
         }
+        _event.handleNetConnectionError(context) {
+            checkConnectionUseCase.isConnectedToNetwork()
+        }
+        updateState { it.copy(avatarUri = avatarUri) }
     }
 
-    fun processAndSaveImage(context: Context, uri: Uri, onComplete: (String?) -> Unit) {
-        viewModelScope.launch {
+    fun processAndSaveImage(context: Context, uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val savedUri = SavingFileUtil.saveImageFromUri(context, uri)
                 Log.d(TAG, "EditProfileViewModel processAndSaveImage: uri = $savedUri")
@@ -96,13 +98,14 @@ class EditProfileViewModel @Inject constructor(
                     val uriString = it.toString()
                     // TODO remove after check if it doesn't need
 //                    ImageUtil.saveProfileImageUriString(context, uriString)
-                    onComplete(uriString)
-                } ?: onComplete(null)
+                    onAvatarUriChange(uriString)
+                } ?: onAvatarUriChange(null)
             } catch (e: Exception) {
                 Log.d(TAG, "EditProfileViewModel processAndSaveImage error = $e")
                 e.printStackTrace()
-                onComplete(null)
+                onAvatarUriChange(null)
             }
+            _isImageLoading.update { false }
         }
     }
 
@@ -110,7 +113,7 @@ class EditProfileViewModel @Inject constructor(
         val currentState = (state.value as? LoadResult.Success)?.data ?: return
 
         viewModelScope.launch {
-            _state.value = LoadResult.Loading
+            _state.update { LoadResult.Loading }
             try {
                 val updatedProfile = UserProfile(
                     username = currentState.username.trim(),
@@ -137,13 +140,17 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
+    fun setLoadingImageState() {
+        _isImageLoading.update { true }
+    }
+
     fun clearEvent() {
-        _event.update { null }
+        _event.update { Events.None }
     }
 
     private fun updateState(update: (EditProfileState) -> EditProfileState) {
         val current = (_state.value as? LoadResult.Success)?.data ?: return
-        _state.value = LoadResult.Success(update(current))
+        _state.update { LoadResult.Success(update(current)) }
     }
 }
 

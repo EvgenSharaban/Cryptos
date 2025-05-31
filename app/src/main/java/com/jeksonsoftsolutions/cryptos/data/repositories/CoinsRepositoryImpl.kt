@@ -71,12 +71,12 @@ class CoinsRepositoryImpl @Inject constructor(
                 val favoriteCoinsList = coinsDao.getAllCoins().first()
                     .filter { it.isFavorite == true }
                     .map { it.id }
+
                 coinsDao.deleteAllCoins()
                 coinsDao.insertAllCoins(list.mapToLocalEntityList())
-                coinsDao.getAllCoins().first().forEach {
-                    if (it.id in favoriteCoinsList) {
-                        coinsDao.updateFavoriteStatus(it.id, true)
-                    }
+
+                if (favoriteCoinsList.isNotEmpty()) {
+                    coinsDao.updateFavoriteStatusBatch(favoriteCoinsList)
                 }
             }
             Log.d(TAG, "insertCoinsToDB: success")
