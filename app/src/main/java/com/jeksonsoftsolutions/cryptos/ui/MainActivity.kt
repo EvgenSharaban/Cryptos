@@ -21,8 +21,8 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 import com.jeksonsoftsolutions.cryptos.ui.screens.coindetails.CoinDetailsScreen
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.favorite.FavoriteCoinsScreen
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.home.HomeScreen
-import com.jeksonsoftsolutions.cryptos.ui.screens.profile.profile.ProfileScreen
 import com.jeksonsoftsolutions.cryptos.ui.screens.profile.edit_profile.EditProfileScreen
+import com.jeksonsoftsolutions.cryptos.ui.screens.profile.profile.ProfileScreen
 import com.jeksonsoftsolutions.cryptos.ui.theme.CryptosTheme
 import dagger.hilt.android.AndroidEntryPoint
 

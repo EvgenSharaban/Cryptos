@@ -17,7 +17,6 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.utils.handleNetConnectionError
 import com.jeksonsoftsolutions.cryptos.utils.SavingFileUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -90,19 +89,20 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun processAndSaveImage(context: Context, uri: Uri) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isImageLoading.update { true }
             try {
                 val savedUri = SavingFileUtil.saveImageFromUri(context, uri)
                 Log.d(TAG, "EditProfileViewModel processAndSaveImage: uri = $savedUri")
-                savedUri?.let {
-                    val uriString = it.toString()
-                    // TODO remove after check if it doesn't need
-//                    ImageUtil.saveProfileImageUriString(context, uriString)
-                    onAvatarUriChange(uriString)
-                } ?: onAvatarUriChange(null)
+                savedUri ?: run {
+                    onAvatarUriChange(null)
+                    return@launch
+                }
+                // TODO remove after check if it doesn't need
+//              ImageUtil.saveProfileImageUriString(context, uriString)
+                onAvatarUriChange(savedUri.toString())
             } catch (e: Exception) {
-                Log.d(TAG, "EditProfileViewModel processAndSaveImage error = $e")
-                e.printStackTrace()
+                Log.e(TAG, "EditProfileViewModel processAndSaveImage error", e)
                 onAvatarUriChange(null)
             }
             _isImageLoading.update { false }
@@ -138,10 +138,6 @@ class EditProfileViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun setLoadingImageState() {
-        _isImageLoading.update { true }
     }
 
     fun clearEvent() {

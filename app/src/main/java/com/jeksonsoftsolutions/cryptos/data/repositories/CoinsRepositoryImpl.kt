@@ -68,8 +68,7 @@ class CoinsRepositoryImpl @Inject constructor(
     private suspend fun insertCoinsToDB(list: List<CoinDomain>) {
         try {
             dataBase.withTransaction {
-                val favoriteCoinsList = coinsDao.getAllCoins().first()
-                    .filter { it.isFavorite == true }
+                val favoriteCoinsList = coinsDao.getFavoriteCoins().first()
                     .map { it.id }
 
                 coinsDao.deleteAllCoins()
@@ -80,8 +79,8 @@ class CoinsRepositoryImpl @Inject constructor(
                 }
             }
             Log.d(TAG, "insertCoinsToDB: success")
-        } catch (e: Throwable) {
-            Log.e(TAG, "insertCoinsToDB: failed, \nerror = $e")
+        } catch (e: Exception) {
+            Log.e(TAG, "insertCoinsToDB: failed", e)
         }
     }
 

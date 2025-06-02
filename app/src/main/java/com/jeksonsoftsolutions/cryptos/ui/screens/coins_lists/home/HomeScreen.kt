@@ -47,15 +47,14 @@ fun HomeScreen() {
         )
     }
 
-
-    when (event) {
+    when (val currentEvent = event) {
         is MessageForUser -> {
             AlertDialog(
                 onDismissRequest = { viewModel.clearEvent() },
-                title = { Text((event as MessageForUser).messageTitle) },
+                title = { Text(currentEvent.messageTitle) },
                 text = {
-                    if ((event as MessageForUser).messageDescription.isNotEmpty()) {
-                        Text((event as MessageForUser).messageDescription)
+                    if (currentEvent.messageDescription.isNotEmpty()) {
+                        Text(currentEvent.messageDescription)
                     }
                 },
                 confirmButton = {

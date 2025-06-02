@@ -81,7 +81,6 @@ fun EditProfileScreen() {
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            viewModel.setLoadingImageState()
             Log.d(TAG, "EditProfileViewModel EditProfileScreen savedUri = $it ")
             viewModel.processAndSaveImage(context, it)
         }
@@ -173,14 +172,14 @@ fun EditProfileScreen() {
         )
     }
 
-    when (event) {
+    when (val currentEvent = event) {
         is MessageForUser -> {
             AlertDialog(
                 onDismissRequest = { viewModel.clearEvent() },
-                title = { Text((event as MessageForUser).messageTitle) },
+                title = { Text(currentEvent.messageTitle) },
                 text = {
-                    if ((event as MessageForUser).messageDescription.isNotEmpty()) {
-                        Text((event as MessageForUser).messageDescription)
+                    if (currentEvent.messageDescription.isNotEmpty()) {
+                        Text(currentEvent.messageDescription)
                     }
                 },
                 confirmButton = {

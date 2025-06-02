@@ -4,6 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
+import com.jeksonsoftsolutions.cryptos.core.other.TAG
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -12,17 +16,17 @@ object SavingFileUtil {
      * Save an image from Uri to app-specific storage or shared storage
      * Returns a Uri that can be stored and used later
      */
-    fun saveImageFromUri(context: Context, sourceUri: Uri): Uri? {
+    suspend fun saveImageFromUri(context: Context, sourceUri: Uri): Uri? = withContext(Dispatchers.IO) {
         try {
             // Open an input stream from the source Uri
-            val inputStream = context.contentResolver.openInputStream(sourceUri) ?: return null
+            val inputStream = context.contentResolver.openInputStream(sourceUri) ?: return@withContext null
             val bitmap = BitmapFactory.decodeStream(inputStream)
             inputStream.close()
 
-            return saveImageToInternalStorage(context, bitmap)
+            return@withContext saveImageToInternalStorage(context, bitmap)
         } catch (e: Exception) {
-            e.printStackTrace()
-            return null
+            Log.e(TAG, "saveImageFromUri: error", e)
+            return@withContext null
         }
     }
 
