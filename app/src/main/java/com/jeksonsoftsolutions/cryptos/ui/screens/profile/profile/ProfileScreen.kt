@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -153,7 +154,9 @@ private fun ProfileContent(
                         .crossfade(true)
                         .build(),
                     contentDescription = "Profile Picture",
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .heightIn(max = 200.dp),
                     contentScale = ContentScale.Crop,
                     error = painterResource(R.drawable.ic_broken_image),
                 )
