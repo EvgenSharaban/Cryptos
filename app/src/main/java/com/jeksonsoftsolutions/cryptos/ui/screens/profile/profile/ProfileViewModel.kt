@@ -3,8 +3,8 @@ package com.jeksonsoftsolutions.cryptos.ui.screens.profile.profile
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jeksonsoftsolutions.cryptos.domain.repositories.UserProfileRepository
 import com.jeksonsoftsolutions.cryptos.domain.usecases.CheckConnectionUseCase
-import com.jeksonsoftsolutions.cryptos.domain.usecases.profile.ProfileUseCases
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResult
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.handleNetConnectionError
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileUseCases: ProfileUseCases,
+    private val profileRepository: UserProfileRepository,
     private val checkConnectionUseCase: CheckConnectionUseCase,
     @ApplicationContext val context: Context,
 ) : ViewModel() {
@@ -38,7 +38,7 @@ class ProfileViewModel @Inject constructor(
                 context = context,
                 checkInternet = { checkConnectionUseCase.isConnectedToNetwork() }
             )
-            val userProfile = profileUseCases.getUserProfile().first()
+            val userProfile = profileRepository.getUserProfile().first()
             _state.update {
                 LoadResult.Success(
                     ProfileState(

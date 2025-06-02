@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.jeksonsoftsolutions.cryptos.R
 import com.jeksonsoftsolutions.cryptos.core.other.TAG
 import com.jeksonsoftsolutions.cryptos.domain.models.UserProfile
+import com.jeksonsoftsolutions.cryptos.domain.repositories.UserProfileRepository
 import com.jeksonsoftsolutions.cryptos.domain.usecases.CheckConnectionUseCase
-import com.jeksonsoftsolutions.cryptos.domain.usecases.profile.ProfileUseCases
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResult
 import com.jeksonsoftsolutions.cryptos.ui.components.NoInternetException
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
-    private val profileUseCases: ProfileUseCases,
+    private val profileRepository: UserProfileRepository,
     private val checkConnectionUseCase: CheckConnectionUseCase,
     @ApplicationContext val context: Context,
 ) : ViewModel() {
@@ -49,7 +49,7 @@ class EditProfileViewModel @Inject constructor(
     fun loadUserProfile() {
         viewModelScope.launch {
             _state.update { LoadResult.Loading }
-            val userProfile = profileUseCases.getUserProfile().first()
+            val userProfile = profileRepository.getUserProfile().first()
             _state.update {
                 LoadResult.Success(
                     EditProfileState(
@@ -121,7 +121,7 @@ class EditProfileViewModel @Inject constructor(
                     bio = currentState.bio.trim(),
                     avatarUri = currentState.avatarUri
                 )
-                profileUseCases.updateUserProfile(updatedProfile)
+                profileRepository.updateUserProfile(updatedProfile)
                 onSuccess()
             } catch (e: Exception) {
                 val title = e.message ?: context.getString(R.string.unknown_error)
