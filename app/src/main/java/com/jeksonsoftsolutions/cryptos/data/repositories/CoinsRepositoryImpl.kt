@@ -13,8 +13,14 @@ import com.jeksonsoftsolutions.cryptos.data.network.ApiService
 import com.jeksonsoftsolutions.cryptos.data.network.entities.mappers.CoinListDomainMapper
 import com.jeksonsoftsolutions.cryptos.domain.models.CoinDomain
 import com.jeksonsoftsolutions.cryptos.domain.repositories.CoinsRepository
+import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListItemUI
+import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListItemUiMapper.mapToUiList
+import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortDirection
+import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
+import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CoinsRepositoryImpl @Inject constructor(
@@ -62,6 +68,23 @@ class CoinsRepositoryImpl @Inject constructor(
         } catch (e: Throwable) {
             Log.d(TAG, "getCoinById: failed, error = $e ")
             return null
+        }
+    }
+
+    override fun getSortedCoins(sortState: SortState): Flow<List<CoinsListItemUI>> {
+        return coinsLocal.map { coins ->
+            val uiCoins = coins.mapToUiList()
+            val sorted = when (sortState.type) {
+                SortType.RANK -> uiCoins.sortedBy { it.rank.toIntOrNull() ?: Int.MAX_VALUE }
+                SortType.NAME -> uiCoins.sortedBy { it.shortName }
+                SortType.PRICE -> uiCoins.sortedBy {
+                    it.price
+                        .replace("$", "")
+                        .replace(",", "") // need for formats like US (1,256.01)
+                        .toDoubleOrNull() ?: 0.0
+                }
+            }
+            if (sortState.direction == SortDirection.DESCENDING) sorted.reversed() else sorted
         }
     }
 
