@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,6 +49,8 @@ fun HomeScreen() {
     val event by viewModel.event.collectAsState()
     val sortState by viewModel.sortState.collectAsState()
     val showSortRow by viewModel.showSortRow.collectAsState()
+    val showSearchField by viewModel.showSearchRow.collectAsState()
+    val searchQuery by viewModel.searchQueryState.collectAsState()
 
     val navController = LocalNavController.current
 
@@ -57,7 +60,7 @@ fun HomeScreen() {
         toolbarAction = {
             Row {
                 IconButton(onClick = {
-                    // TODO: Implement search functionality
+                    viewModel.toggleSearchRowVisibility()
                 }) {
                     Icon(
                         imageVector = Icons.Default.Search,
@@ -80,6 +83,13 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            if (showSearchField) {
+                SearchRow(
+                    searchQuery = searchQuery,
+                    onSearchQueryChanged = viewModel::updateSearchQuery
+                )
+            }
+
             if (showSortRow) {
                 SortRow(
                     currentSortState = sortState,
@@ -134,6 +144,28 @@ fun HomeScreen() {
 
         Events.None -> {}
     }
+}
+
+@Composable
+private fun SearchRow(
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = searchQuery,
+        onValueChange = onSearchQueryChanged,
+        label = { Text("Search") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null
+            )
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        singleLine = true
+    )
 }
 
 @Composable

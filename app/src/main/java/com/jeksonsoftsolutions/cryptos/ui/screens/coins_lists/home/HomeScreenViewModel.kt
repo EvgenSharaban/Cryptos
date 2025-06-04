@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,8 +40,14 @@ class HomeScreenViewModel @Inject constructor(
     private val _sortState = MutableStateFlow(SortState())
     val sortState = _sortState.asStateFlow()
 
+    private val _searchQueryState = MutableStateFlow("")
+    val searchQueryState = _searchQueryState.asStateFlow()
+
     private val _showSortRow = MutableStateFlow(false)
     val showSortRow = _showSortRow.asStateFlow()
+
+    private val _showSearchRow = MutableStateFlow(false)
+    val showSearchRow = _showSearchRow.asStateFlow()
 
     init {
         initiateCacheData()
@@ -84,6 +91,17 @@ class HomeScreenViewModel @Inject constructor(
         _showSortRow.update { !it }
     }
 
+    fun toggleSearchRowVisibility() {
+        _showSearchRow.update { !it }
+        if (!_showSearchRow.value) {
+            _searchQueryState.update { "" }
+        }
+    }
+
+    fun updateSearchQuery(query: String) {
+        _searchQueryState.update { query }
+    }
+
     fun sortBy(sortType: SortType) {
         _sortState.update { currentState ->
             if (currentState.type == sortType) {
@@ -105,12 +123,16 @@ class HomeScreenViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun initiateCacheData() {
         viewModelScope.launch {
-            /** .flatMapLatest ensures that: when sortState changes, the previous data stream is discarded;
-             * a new stream is created with updated sorting parameters;
-             * the UI receives correctly sorted data
+            /** .flatMapLatest ensures that: when sortState or searchQuery changes, the previous data stream is discarded;
+             * a new stream is created with updated sorting and search parameters;
+             * the UI receives correctly sorted and filtered data!
+             * In combine lambda we pack both values in Flow (this can be done also using data class)
+             * In flatMapLatest we unpack them and pass to repository
              * */
-            sortState.flatMapLatest { currentSortState ->
-                coinsRepository.coinsLocal(currentSortState)
+            combine(sortState, searchQueryState) { sort, search ->
+                Pair(sort, search)
+            }.flatMapLatest { (currentSortState, currentSearchQuery) ->
+                coinsRepository.coinsLocal(currentSortState, currentSearchQuery)
             }
                 .collect { sortedCoins ->
                     _stateFlow.update {

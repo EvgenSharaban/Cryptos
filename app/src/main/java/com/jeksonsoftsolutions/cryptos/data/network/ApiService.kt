@@ -9,7 +9,9 @@ interface ApiService {
 
     @GET("/v3/assets")
     suspend fun getCoins(
-        @Query("limit") limit: Int = 100
+        @Query("limit") limit: Int?,
+        // TODO may be there search not need, discuss
+        @Query("search") search: String?
     ): Response<CoinListEntity>
 
 }

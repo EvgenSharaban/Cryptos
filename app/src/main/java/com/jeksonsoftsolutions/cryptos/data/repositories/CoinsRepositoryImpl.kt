@@ -30,13 +30,22 @@ class CoinsRepositoryImpl @Inject constructor(
 //    @ApplicationContext private val context: Context
 ) : CoinsRepository {
 
-    override fun coinsLocal(sortState: SortState?): Flow<List<CoinsListItemUI>> {
+    override fun coinsLocal(sortState: SortState?, searchQuery: String): Flow<List<CoinsListItemUI>> {
         return coinsDao.getAllCoins().map { coins ->
             val uiCoins = coins.mapToUiList()
-            if (sortState != null) {
-                sortCoins(uiCoins, sortState)
+            val filteredCoins = if (searchQuery.isNotEmpty()) {
+                uiCoins.filter { coin ->
+                    coin.fullName.contains(searchQuery, ignoreCase = true) ||
+                            coin.shortName.contains(searchQuery, ignoreCase = true)
+                }
             } else {
                 uiCoins
+            }
+
+            if (sortState != null) {
+                sortCoins(filteredCoins, sortState)
+            } else {
+                filteredCoins
             }
         }
     }
@@ -52,9 +61,10 @@ class CoinsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchCoins(): Result<Unit> {
+    // TODO may be there search not need, discuss
+    override suspend fun fetchCoins(search: String?, limit: Int?): Result<Unit> {
         return safeCall {
-            apiService.getCoins()
+            apiService.getCoins(limit = limit, search = search)
         }
             .toDomain(CoinListDomainMapper)
             .onSuccess {
