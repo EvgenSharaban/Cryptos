@@ -7,13 +7,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface CoinsRepository {
 
-    val coinsLocal: Flow<List<CoinRoomEntity>>
-    val favoriteCoinsLocal: Flow<List<CoinRoomEntity>>
+    fun coinsLocal(sortState: SortState? = null): Flow<List<CoinsListItemUI>>
+    fun favoriteCoinsLocal(sortState: SortState? = null): Flow<List<CoinsListItemUI>>
 
     suspend fun fetchCoins(): Result<Unit>
     suspend fun toggleFavorite(coinId: String)
     suspend fun getCoinById(coinId: String): CoinRoomEntity?
-
-    fun getSortedCoins(sortState: SortState): Flow<List<CoinsListItemUI>>
 
 }

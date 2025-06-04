@@ -30,9 +30,27 @@ class CoinsRepositoryImpl @Inject constructor(
 //    @ApplicationContext private val context: Context
 ) : CoinsRepository {
 
-    override val coinsLocal: Flow<List<CoinRoomEntity>> = coinsDao.getAllCoins()
-    override val favoriteCoinsLocal: Flow<List<CoinRoomEntity>>
-        get() = coinsDao.getFavoriteCoins()
+    override fun coinsLocal(sortState: SortState?): Flow<List<CoinsListItemUI>> {
+        return coinsDao.getAllCoins().map { coins ->
+            val uiCoins = coins.mapToUiList()
+            if (sortState != null) {
+                sortCoins(uiCoins, sortState)
+            } else {
+                uiCoins
+            }
+        }
+    }
+
+    override fun favoriteCoinsLocal(sortState: SortState?): Flow<List<CoinsListItemUI>> {
+        return coinsDao.getFavoriteCoins().map { coins ->
+            val uiCoins = coins.mapToUiList()
+            if (sortState != null) {
+                sortCoins(uiCoins, sortState)
+            } else {
+                uiCoins
+            }
+        }
+    }
 
     override suspend fun fetchCoins(): Result<Unit> {
         return safeCall {
@@ -71,23 +89,6 @@ class CoinsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getSortedCoins(sortState: SortState): Flow<List<CoinsListItemUI>> {
-        return coinsLocal.map { coins ->
-            val uiCoins = coins.mapToUiList()
-            val sorted = when (sortState.type) {
-                SortType.RANK -> uiCoins.sortedBy { it.rank.toIntOrNull() ?: Int.MAX_VALUE }
-                SortType.NAME -> uiCoins.sortedBy { it.shortName }
-                SortType.PRICE -> uiCoins.sortedBy {
-                    it.price
-                        .replace("$", "")
-                        .replace(",", "") // need for formats like US (1,256.01)
-                        .toDoubleOrNull() ?: 0.0
-                }
-            }
-            if (sortState.direction == SortDirection.DESCENDING) sorted.reversed() else sorted
-        }
-    }
-
     private suspend fun insertCoinsToDB(list: List<CoinDomain>) {
         try {
             dataBase.withTransaction {
@@ -105,6 +106,20 @@ class CoinsRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "insertCoinsToDB: failed", e)
         }
+    }
+
+    private fun sortCoins(coins: List<CoinsListItemUI>, sortState: SortState): List<CoinsListItemUI> {
+        val sorted = when (sortState.type) {
+            SortType.RANK -> coins.sortedBy { it.rank.toIntOrNull() ?: Int.MAX_VALUE }
+            SortType.NAME -> coins.sortedBy { it.shortName }
+            SortType.PRICE -> coins.sortedBy {
+                it.price
+                    .replace("$", "")
+                    .replace(",", "") // need for formats like US (1,256.01)
+                    .toDoubleOrNull() ?: 0.0
+            }
+        }
+        return if (sortState.direction == SortDirection.DESCENDING) sorted.reversed() else sorted
     }
 
 //    private suspend fun fakeInsert() { // need for test

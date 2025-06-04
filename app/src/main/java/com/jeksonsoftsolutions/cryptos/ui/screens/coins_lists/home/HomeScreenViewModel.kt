@@ -8,7 +8,6 @@ import com.jeksonsoftsolutions.cryptos.domain.repositories.CoinsRepository
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResult
 import com.jeksonsoftsolutions.cryptos.ui.components.NoInternetException
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events
-import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListItemUiMapper.mapToUiList
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortDirection
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
@@ -19,7 +18,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -104,32 +102,14 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun initiateCacheData() {
         viewModelScope.launch {
-            combine(
-                coinsRepository.coinsLocal,
-                sortState
-            ) { coins, currentSortState ->
-                val uiCoins = coins.mapToUiList()
-                val sorted = when (currentSortState.type) {
-                    SortType.RANK -> uiCoins.sortedBy { it.rank.toIntOrNull() ?: Int.MAX_VALUE }
-                    SortType.NAME -> uiCoins.sortedBy { it.shortName }
-                    SortType.PRICE -> uiCoins.sortedBy {
-                        it.price
-                            .replace("$", "")
-                            .replace(",", "")
-                            .toDoubleOrNull() ?: 0.0
-                    }
-                }
-                if (currentSortState.direction == SortDirection.DESCENDING) {
-                    sorted.reversed()
-                } else {
-                    sorted
-                }
-            }.collect { sortedCoins ->
-                _stateFlow.update {
-                    if (sortedCoins.isEmpty()) {
-                        LoadResult.Empty(R.string.no_coins_found)
-                    } else {
-                        LoadResult.Success(CoinsListScreenState(sortedCoins))
+            sortState.collect { currentSortState ->
+                coinsRepository.coinsLocal(currentSortState).collect { sortedCoins ->
+                    _stateFlow.update {
+                        if (sortedCoins.isEmpty()) {
+                            LoadResult.Empty(R.string.no_coins_found)
+                        } else {
+                            LoadResult.Success(CoinsListScreenState(sortedCoins))
+                        }
                     }
                 }
             }
