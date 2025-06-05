@@ -9,9 +9,9 @@ import com.jeksonsoftsolutions.cryptos.ui.components.LoadResult
 import com.jeksonsoftsolutions.cryptos.ui.components.NoInternetException
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
+import com.jeksonsoftsolutions.cryptos.ui.screens.utils.CoinsSortType
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortDirection
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
-import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -102,9 +102,9 @@ class HomeScreenViewModel @Inject constructor(
         _searchQueryState.update { query }
     }
 
-    fun sortBy(sortType: SortType) {
+    fun sortBy(coinsSortType: CoinsSortType) {
         _sortState.update { currentState ->
-            if (currentState.type == sortType) {
+            if (currentState.type == coinsSortType) {
                 // Toggle direction if same field
                 currentState.copy(
                     direction = if (currentState.direction == SortDirection.ASCENDING) {
@@ -115,7 +115,7 @@ class HomeScreenViewModel @Inject constructor(
                 )
             } else {
                 // New field, reset to ascending
-                SortState(type = sortType, direction = SortDirection.ASCENDING)
+                SortState(type = coinsSortType, direction = SortDirection.ASCENDING)
             }
         }
     }

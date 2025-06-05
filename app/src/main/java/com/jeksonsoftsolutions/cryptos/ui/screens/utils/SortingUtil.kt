@@ -1,11 +1,11 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.utils
 
 data class SortState(
-    val type: SortType = SortType.RANK,
+    val type: CoinsSortType = CoinsSortType.RANK,
     val direction: SortDirection = SortDirection.ASCENDING
 )
 
-enum class SortType {
+enum class CoinsSortType {
     RANK, NAME, PRICE
 }
 

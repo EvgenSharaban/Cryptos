@@ -15,9 +15,9 @@ import com.jeksonsoftsolutions.cryptos.domain.models.CoinDomain
 import com.jeksonsoftsolutions.cryptos.domain.repositories.CoinsRepository
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListItemUI
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListItemUiMapper.mapToUiList
+import com.jeksonsoftsolutions.cryptos.ui.screens.utils.CoinsSortType
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortDirection
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
-import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -120,9 +120,9 @@ class CoinsRepositoryImpl @Inject constructor(
 
     private fun sortCoins(coins: List<CoinsListItemUI>, sortState: SortState): List<CoinsListItemUI> {
         val sorted = when (sortState.type) {
-            SortType.RANK -> coins.sortedBy { it.rank.toIntOrNull() ?: Int.MAX_VALUE }
-            SortType.NAME -> coins.sortedBy { it.shortName }
-            SortType.PRICE -> coins.sortedBy {
+            CoinsSortType.RANK -> coins.sortedBy { it.rank.toIntOrNull() ?: Int.MAX_VALUE }
+            CoinsSortType.NAME -> coins.sortedBy { it.shortName }
+            CoinsSortType.PRICE -> coins.sortedBy {
                 it.price
                     .replace("$", "")
                     .replace(",", "") // need for formats like US (1,256.01)

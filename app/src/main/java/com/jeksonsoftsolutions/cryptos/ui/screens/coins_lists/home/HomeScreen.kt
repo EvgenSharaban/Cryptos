@@ -21,10 +21,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,9 +42,9 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events.MessageForUser
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.ItemsListContent
+import com.jeksonsoftsolutions.cryptos.ui.screens.utils.CoinsSortType
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortDirection
 import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
-import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortType
 
 @Composable
 fun HomeScreen() {
@@ -151,10 +155,16 @@ private fun SearchRow(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     OutlinedTextField(
         value = searchQuery,
         onValueChange = onSearchQueryChanged,
-        label = { Text("Search") },
+        label = { Text(stringResource(R.string.search)) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
@@ -163,7 +173,8 @@ private fun SearchRow(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .focusRequester(focusRequester),
         singleLine = true
     )
 }
@@ -171,7 +182,7 @@ private fun SearchRow(
 @Composable
 private fun SortRow(
     currentSortState: SortState,
-    onSortClicked: (SortType) -> Unit
+    onSortClicked: (CoinsSortType) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -181,27 +192,27 @@ private fun SortRow(
     ) {
         SortField(
             text = "Rank",
-            sortType = SortType.RANK,
-            isSelected = currentSortState.type == SortType.RANK,
-            direction = if (currentSortState.type == SortType.RANK) currentSortState.direction else SortDirection.ASCENDING,
+            coinsSortType = CoinsSortType.RANK,
+            isSelected = currentSortState.type == CoinsSortType.RANK,
+            direction = if (currentSortState.type == CoinsSortType.RANK) currentSortState.direction else SortDirection.ASCENDING,
             onClick = onSortClicked,
             modifier = Modifier.weight(1f)
         )
 
         SortField(
             text = "Name",
-            sortType = SortType.NAME,
-            isSelected = currentSortState.type == SortType.NAME,
-            direction = if (currentSortState.type == SortType.NAME) currentSortState.direction else SortDirection.ASCENDING,
+            coinsSortType = CoinsSortType.NAME,
+            isSelected = currentSortState.type == CoinsSortType.NAME,
+            direction = if (currentSortState.type == CoinsSortType.NAME) currentSortState.direction else SortDirection.ASCENDING,
             onClick = onSortClicked,
             modifier = Modifier.weight(2f)
         )
 
         SortField(
             text = "Price",
-            sortType = SortType.PRICE,
-            isSelected = currentSortState.type == SortType.PRICE,
-            direction = if (currentSortState.type == SortType.PRICE) currentSortState.direction else SortDirection.ASCENDING,
+            coinsSortType = CoinsSortType.PRICE,
+            isSelected = currentSortState.type == CoinsSortType.PRICE,
+            direction = if (currentSortState.type == CoinsSortType.PRICE) currentSortState.direction else SortDirection.ASCENDING,
             onClick = onSortClicked,
             modifier = Modifier.weight(1.5f)
         )
@@ -211,15 +222,15 @@ private fun SortRow(
 @Composable
 private fun SortField(
     text: String,
-    sortType: SortType,
+    coinsSortType: CoinsSortType,
     isSelected: Boolean,
     direction: SortDirection,
-    onClick: (SortType) -> Unit,
+    onClick: (CoinsSortType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
-            .clickable { onClick(sortType) }
+            .clickable { onClick(coinsSortType) }
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
