@@ -93,7 +93,7 @@ private fun ContentItem(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = stringResource(R.string.rank, coin.rank),
+                        text = stringResource(R.string.rank_, coin.rank),
                         textAlign = TextAlign.End,
                         modifier = Modifier.weight(1f)
                     )

@@ -61,10 +61,9 @@ class CoinsRepositoryImpl @Inject constructor(
         }
     }
 
-    // TODO may be there search not need, discuss
-    override suspend fun fetchCoins(search: String?, limit: Int?): Result<Unit> {
+    override suspend fun fetchCoins(): Result<Unit> {
         return safeCall {
-            apiService.getCoins(limit = limit, search = search)
+            apiService.getCoins()
         }
             .toDomain(CoinListDomainMapper)
             .onSuccess {

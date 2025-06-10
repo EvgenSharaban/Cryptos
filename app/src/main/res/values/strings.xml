@@ -7,7 +7,7 @@
     <string name="coin_details_screen">Coin details</string>
     <string name="favorite_coins_screen">Watchlist</string>
 
-    <string name="rank">Rank #%1$s</string>
+    <string name="rank_">Rank #%1$s</string>
 
     <string name="cancel">Cancel</string>
     <string name="try_again">Try again</string>
@@ -40,4 +40,7 @@
     <string name="about_me">About Me</string>
     <string name="profile_image">Profile Image</string>
     <string name="search">Search</string>
+    <string name="rank">Rank</string>
+    <string name="name">Name</string>
+    <string name="price">Price</string>
 </resources>

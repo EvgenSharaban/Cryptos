@@ -15,11 +15,13 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -120,7 +122,7 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun initiateCacheData() {
         viewModelScope.launch {
             /** .flatMapLatest ensures that: when sortState or searchQuery changes, the previous data stream is discarded;
@@ -131,9 +133,11 @@ class HomeScreenViewModel @Inject constructor(
              * */
             combine(sortState, searchQueryState) { sort, search ->
                 Pair(sort, search)
-            }.flatMapLatest { (currentSortState, currentSearchQuery) ->
-                coinsRepository.coinsLocal(currentSortState, currentSearchQuery)
             }
+                .debounce(300)
+                .flatMapLatest { (currentSortState, currentSearchQuery) ->
+                    coinsRepository.coinsLocal(currentSortState, currentSearchQuery)
+                }
                 .collect { sortedCoins ->
                     _stateFlow.update {
                         if (sortedCoins.isEmpty()) {

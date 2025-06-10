@@ -128,7 +128,7 @@ fun HomeScreen() {
                 confirmButton = {
                     Button(
                         onClick = {
-                            // delayTime need for displaying progress bar, but can do without it
+                            // TODO delayTime need for displaying progress bar, but can do without it, recreate it behavior with delay
                             viewModel.fetchCoins(300)
                             viewModel.clearEvent()
                         }
@@ -191,7 +191,7 @@ private fun SortRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         SortField(
-            text = "Rank",
+            text = stringResource(R.string.rank),
             coinsSortType = CoinsSortType.RANK,
             isSelected = currentSortState.type == CoinsSortType.RANK,
             direction = if (currentSortState.type == CoinsSortType.RANK) currentSortState.direction else SortDirection.ASCENDING,
@@ -200,7 +200,7 @@ private fun SortRow(
         )
 
         SortField(
-            text = "Name",
+            text = stringResource(R.string.name),
             coinsSortType = CoinsSortType.NAME,
             isSelected = currentSortState.type == CoinsSortType.NAME,
             direction = if (currentSortState.type == CoinsSortType.NAME) currentSortState.direction else SortDirection.ASCENDING,
@@ -209,7 +209,7 @@ private fun SortRow(
         )
 
         SortField(
-            text = "Price",
+            text = stringResource(R.string.price),
             coinsSortType = CoinsSortType.PRICE,
             isSelected = currentSortState.type == CoinsSortType.PRICE,
             direction = if (currentSortState.type == CoinsSortType.PRICE) currentSortState.direction else SortDirection.ASCENDING,

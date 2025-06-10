@@ -65,6 +65,8 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events.MessageForUser
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 
+private val BOTTOM_SPACING = 16.dp
+
 @Composable
 fun EditProfileScreen() {
     val viewModel: EditProfileViewModel = hiltViewModel()
@@ -347,5 +349,3 @@ private fun measureBottomPadding(navBarHeight: Dp): Dp {
     }
     return visibleInset + BOTTOM_SPACING
 }
-
-private val BOTTOM_SPACING = 16.dp
