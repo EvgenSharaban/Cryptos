@@ -1,5 +1,8 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.coindetails
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -20,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -30,12 +35,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jeksonsoftsolutions.cryptos.R
 import com.jeksonsoftsolutions.cryptos.core.other.roundTo
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResultContent
+import com.jeksonsoftsolutions.cryptos.ui.components.RoundImageCoinAvatar
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.AppScaffold
 import com.jeksonsoftsolutions.cryptos.ui.screens.coindetails.models.DetailsUiModel
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.PercentageChangeText
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CoinDetailsScreen() {
+fun CoinDetailsScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
+) {
     val viewModel: CoinDetailsViewModel = hiltViewModel()
     val screenState = viewModel.stateFlow.collectAsState()
 
@@ -59,22 +69,27 @@ fun CoinDetailsScreen() {
             ) { paddingValues ->
                 ContentItem(
                     screenState.coin,
-                    modifier = Modifier.padding(paddingValues)
+                    modifier = Modifier.padding(paddingValues),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedContentScope = animatedContentScope
                 )
             }
         }
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ContentItem(
     coin: DetailsUiModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
         // Price section
         Card(
@@ -82,25 +97,46 @@ private fun ContentItem(
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row {
-                    Text(
-                        text = stringResource(R.string.current_price),
-                        style = MaterialTheme.typography.titleMedium
+                Spacer(modifier = Modifier.size(16.dp))
+                RoundImageCoinAvatar(
+                    logo = coin.symbol,
+                    modifier = Modifier.size(40.dp),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedContentScope = animatedContentScope
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row {
+                        Text(
+                            text = stringResource(R.string.current_price),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = stringResource(R.string.rank_, coin.rank),
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RoundedPriceText(
+                        coin.priceUsd,
+                        coin.id,
+                        sharedTransitionScope,
+                        animatedContentScope
                     )
-                    Text(
-                        text = stringResource(R.string.rank_, coin.rank),
-                        textAlign = TextAlign.End,
-                        modifier = Modifier.weight(1f)
+                    PercentageChangeText(
+                        coin.changePercent24Hr,
+                        coin.id,
+                        sharedTransitionScope,
+                        animatedContentScope,
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                RoundedPriceText(coin.priceUsd)
-                PercentageChangeText(coin.changePercent24Hr)
             }
         }
 
@@ -131,16 +167,26 @@ private fun ContentItem(
 }
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun RoundedPriceText(
     value: Double,
+    coinId: String,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     val price = value.roundTo(2).toString()
-    Text(
-        text = stringResource(R.string.price_value, price),
-        style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold
-    )
+    with(sharedTransitionScope) {
+        Text(
+            text = stringResource(R.string.price_value, price),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.sharedElement(
+                sharedTransitionScope.rememberSharedContentState(key = "coin_price_$coinId"),
+                animatedVisibilityScope = animatedContentScope
+            )
+        )
+    }
 }
 
 @Composable

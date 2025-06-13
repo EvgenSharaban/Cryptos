@@ -1,6 +1,11 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -43,12 +48,15 @@ import com.jeksonsoftsolutions.cryptos.ui.theme.itemCoinBackground
 import java.util.Locale
 import kotlin.math.abs
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CoinItemWidget(
     item: CoinsListItemUI,
     onConClicked: (String) -> Unit,
     onFavoriteClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     Card(
         modifier = modifier
@@ -79,9 +87,11 @@ fun CoinItemWidget(
             Spacer(Modifier.size(8.dp))
             RoundImageCoinAvatar(
                 logo = item.shortName,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope
             )
-            Spacer(Modifier.size(8.dp))
+            Spacer(Modifier.size(16.dp))
             Column {
                 Text(text = item.shortName)
                 val marketCap = formatNumber(safeCastStringToDouble(item.marketCapUsd))
@@ -96,11 +106,22 @@ fun CoinItemWidget(
                 horizontalAlignment = Alignment.End
             ) {
                 val roundedPrice = item.price.toDouble().roundTo(2).toString()
-                Text(
-                    text = stringResource(R.string.price_value, roundedPrice),
-                    textAlign = TextAlign.Center
+                with(sharedTransitionScope) {
+                    Text(
+                        text = stringResource(R.string.price_value, roundedPrice),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.sharedElement(
+                            sharedTransitionScope.rememberSharedContentState(key = "coin_price_${item.id}"),
+                            animatedVisibilityScope = animatedContentScope
+                        )
+                    )
+                }
+                PercentageChangeText(
+                    safeCastStringToDouble(item.changePercent24Hr),
+                    itemId = item.id,
+                    sharedTransitionScope,
+                    animatedContentScope
                 )
-                PercentageChangeText(safeCastStringToDouble(item.changePercent24Hr))
             }
             Spacer(Modifier.size(8.dp))
             IconButton(onClick = onFavoriteClicked) {
@@ -114,8 +135,14 @@ fun CoinItemWidget(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun PercentageChangeText(value: Double) {
+fun PercentageChangeText(
+    value: Double,
+    itemId: String,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
+) {
     val arrow = if (value >= 0) stringResource(R.string.arrow_up) else stringResource(R.string.arrow_down)
     val color = if (value >= 0) DarkGreen else Color.Red
     val formattedValue = String.format(Locale.US, "%.2f%%", abs(value))
@@ -126,11 +153,17 @@ fun PercentageChangeText(value: Double) {
         }
     }
 
-    Text(
-        text = annotatedString,
-        fontSize = 16.sp,
-        style = MaterialTheme.typography.bodyMedium
-    )
+    with(sharedTransitionScope) {
+        Text(
+            text = annotatedString,
+            fontSize = 16.sp,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.sharedElement(
+                sharedTransitionScope.rememberSharedContentState(key = "coin_change_${itemId}"),
+                animatedVisibilityScope = animatedContentScope
+            ),
+        )
+    }
 }
 
 private fun safeCastStringToDouble(value: String): Double {
@@ -142,6 +175,7 @@ private fun safeCastStringToDouble(value: String): Double {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showSystemUi = true)
 @Composable
 private fun CoinItemWidgetItemPreview() {
@@ -150,20 +184,28 @@ private fun CoinItemWidgetItemPreview() {
             Column(
                 modifier = Modifier.padding(it)
             ) {
-                CoinItemWidget(
-                    item = CoinsListItemUI(
-                        id = "1",
-                        fullName = "Bitcoin",
-                        shortName = "BTC",
-                        price = "104215.561",
-                        rank = "100",
-                        marketCapUsd = "1134454375148.0439441877343485",
-                        changePercent24Hr = "0.894",
-                        isFavorite = false
-                    ),
-                    onConClicked = {},
-                    onFavoriteClicked = {},
-                )
+                SharedTransitionLayout {
+                    AnimatedContent(
+                        targetState = ""
+                    ) {
+                        CoinItemWidget(
+                            item = CoinsListItemUI(
+                                id = it,
+                                fullName = "Bitcoin",
+                                shortName = "BTC",
+                                price = "104215.561",
+                                rank = "100",
+                                marketCapUsd = "1134454375148.0439441877343485",
+                                changePercent24Hr = "0.894",
+                                isFavorite = false
+                            ),
+                            onConClicked = {},
+                            onFavoriteClicked = {},
+                            sharedTransitionScope = this@SharedTransitionLayout,
+                            animatedContentScope = this
+                        )
+                    }
+                }
             }
         }
     }

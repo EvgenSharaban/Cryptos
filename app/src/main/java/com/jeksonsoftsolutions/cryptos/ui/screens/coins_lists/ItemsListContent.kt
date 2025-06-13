@@ -1,5 +1,8 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -8,12 +11,15 @@ import com.jeksonsoftsolutions.cryptos.ui.components.LoadResult
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResultContent
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ItemsListContent(
     getLoadResult: () -> LoadResult<CoinsListScreenState>,
     onItemClicked: (String) -> Unit,
     onFavoriteClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onTryAgainAction: () -> Unit = {},
 ) {
     LoadResultContent(
@@ -30,7 +36,9 @@ fun ItemsListContent(
                         },
                         onFavoriteClicked = {
                             onFavoriteClicked(item.id)
-                        }
+                        },
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedContentScope = animatedContentScope
                     )
                 }
             }

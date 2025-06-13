@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -43,33 +45,40 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NavApp() {
     val navController = rememberNavController()
     CompositionLocalProvider(
         LocalNavController provides navController
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = CoinsGraph,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            navigation<CoinsGraph>(startDestination = CoinsGraph.CoinsRoute) {
-                composable<CoinsGraph.CoinsRoute> { HomeScreen() }
-                composable<CoinDetailsRoute> { entry ->
-                    CoinDetailsScreen()
+        SharedTransitionLayout {
+            NavHost(
+                navController = navController,
+                startDestination = CoinsGraph,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                navigation<CoinsGraph>(startDestination = CoinsGraph.CoinsRoute) {
+                    composable<CoinsGraph.CoinsRoute> {
+                        HomeScreen(this@SharedTransitionLayout, this)
+                    }
+                    composable<CoinDetailsRoute> { entry ->
+                        CoinDetailsScreen(this@SharedTransitionLayout, this)
+                    }
                 }
-            }
 
-            navigation<FavoriteGraph>(startDestination = FavoriteGraph.FavoriteCoinsRoute) {
-                composable<FavoriteGraph.FavoriteCoinsRoute> { FavoriteCoinsScreen() }
-                composable<FavoriteGraph.FavoriteCoinDetailsRoute> { entry ->
-                    CoinDetailsScreen()
+                navigation<FavoriteGraph>(startDestination = FavoriteGraph.FavoriteCoinsRoute) {
+                    composable<FavoriteGraph.FavoriteCoinsRoute> {
+                        FavoriteCoinsScreen(this@SharedTransitionLayout, this)
+                    }
+                    composable<FavoriteGraph.FavoriteCoinDetailsRoute> { entry ->
+                        CoinDetailsScreen(this@SharedTransitionLayout, this)
+                    }
                 }
-            }
-            navigation<ProfileGraph>(startDestination = ProfileGraph.ProfileRoute) {
-                composable<ProfileGraph.ProfileRoute> { ProfileScreen() }
-                composable<ProfileGraph.EditProfileRoute> { EditProfileScreen() }
+                navigation<ProfileGraph>(startDestination = ProfileGraph.ProfileRoute) {
+                    composable<ProfileGraph.ProfileRoute> { ProfileScreen() }
+                    composable<ProfileGraph.EditProfileRoute> { EditProfileScreen() }
+                }
             }
         }
     }

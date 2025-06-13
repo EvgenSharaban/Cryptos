@@ -1,5 +1,8 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.favorite
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -13,8 +16,12 @@ import com.jeksonsoftsolutions.cryptos.ui.scaffold.environment.FavoriteGraph.Fav
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.ItemsListContent
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun FavoriteCoinsScreen() {
+fun FavoriteCoinsScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
+) {
     val viewModel: FavoriteCoinsViewModel = hiltViewModel()
     val screenState = viewModel.stateFlow.collectAsState()
     val navController = LocalNavController.current
@@ -34,6 +41,8 @@ fun FavoriteCoinsScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = animatedContentScope,
         )
     }
 }
