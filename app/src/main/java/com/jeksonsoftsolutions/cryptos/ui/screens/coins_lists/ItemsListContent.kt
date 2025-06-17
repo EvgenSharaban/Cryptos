@@ -1,14 +1,14 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResult
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResultContent
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavAnimatedContentScope
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalSharedTransitionScope
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListScreenState
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -18,10 +18,14 @@ fun ItemsListContent(
     onItemClicked: (String) -> Unit,
     onFavoriteClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
     onTryAgainAction: () -> Unit = {},
 ) {
+
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedContentScope = LocalNavAnimatedContentScope.current
+        ?: throw IllegalStateException("No AnimatedVisibility found")
+
     LoadResultContent(
         loadResult = getLoadResult(),
         content = { screenState ->

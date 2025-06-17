@@ -88,8 +88,6 @@ fun CoinItemWidget(
             RoundImageCoinAvatar(
                 logo = item.shortName,
                 modifier = Modifier.size(32.dp),
-                sharedTransitionScope = sharedTransitionScope,
-                animatedContentScope = animatedContentScope
             )
             Spacer(Modifier.size(16.dp))
             Column {
@@ -110,9 +108,10 @@ fun CoinItemWidget(
                     Text(
                         text = stringResource(R.string.price_value, roundedPrice),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.sharedElement(
+                        modifier = Modifier.sharedBounds(
                             sharedTransitionScope.rememberSharedContentState(key = "coin_price_${item.id}"),
-                            animatedVisibilityScope = animatedContentScope
+                            animatedVisibilityScope = animatedContentScope,
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
                         )
                     )
                 }
@@ -158,9 +157,10 @@ fun PercentageChangeText(
             text = annotatedString,
             fontSize = 16.sp,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.sharedElement(
+            modifier = Modifier.sharedBounds(
                 sharedTransitionScope.rememberSharedContentState(key = "coin_change_${itemId}"),
-                animatedVisibilityScope = animatedContentScope
+                animatedVisibilityScope = animatedContentScope,
+                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
             ),
         )
     }

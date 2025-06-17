@@ -37,15 +37,14 @@ import com.jeksonsoftsolutions.cryptos.core.other.roundTo
 import com.jeksonsoftsolutions.cryptos.ui.components.LoadResultContent
 import com.jeksonsoftsolutions.cryptos.ui.components.RoundImageCoinAvatar
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.AppScaffold
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavAnimatedContentScope
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalSharedTransitionScope
 import com.jeksonsoftsolutions.cryptos.ui.screens.coindetails.models.DetailsUiModel
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.PercentageChangeText
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CoinDetailsScreen(
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
-) {
+fun CoinDetailsScreen() {
     val viewModel: CoinDetailsViewModel = hiltViewModel()
     val screenState = viewModel.stateFlow.collectAsState()
 
@@ -70,8 +69,6 @@ fun CoinDetailsScreen(
                 ContentItem(
                     screenState.coin,
                     modifier = Modifier.padding(paddingValues),
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedContentScope = animatedContentScope
                 )
             }
         }
@@ -83,8 +80,6 @@ fun CoinDetailsScreen(
 private fun ContentItem(
     coin: DetailsUiModel,
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
 ) {
     Column(
         modifier = modifier
@@ -100,12 +95,15 @@ private fun ContentItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val sharedTransitionScope = LocalSharedTransitionScope.current
+                    ?: throw IllegalStateException("No SharedElementScope found")
+                val animatedContentScope = LocalNavAnimatedContentScope.current
+                    ?: throw IllegalStateException("No AnimatedVisibility found")
+
                 Spacer(modifier = Modifier.size(16.dp))
                 RoundImageCoinAvatar(
                     logo = coin.symbol,
                     modifier = Modifier.size(40.dp),
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedContentScope = animatedContentScope
                 )
                 Column(
                     modifier = Modifier
@@ -181,9 +179,10 @@ private fun RoundedPriceText(
             text = stringResource(R.string.price_value, price),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.sharedElement(
+            modifier = Modifier.sharedBounds(
                 sharedTransitionScope.rememberSharedContentState(key = "coin_price_$coinId"),
-                animatedVisibilityScope = animatedContentScope
+                animatedVisibilityScope = animatedContentScope,
+                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
             )
         )
     }

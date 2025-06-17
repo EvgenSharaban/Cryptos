@@ -1,8 +1,6 @@
 package com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.home
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,10 +49,7 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.utils.SortState
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreen(
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
-) {
+fun HomeScreen() {
     val viewModel: HomeScreenViewModel = hiltViewModel()
     val screenState by viewModel.stateFlow.collectAsState()
     val event by viewModel.event.collectAsState()
@@ -117,8 +112,6 @@ fun HomeScreen(
                     viewModel.toggleFavorite(id)
                 },
                 modifier = Modifier.fillMaxSize(),
-                sharedTransitionScope = sharedTransitionScope,
-                animatedContentScope = animatedContentScope,
                 onTryAgainAction = viewModel::fetchCoins,
             )
         }

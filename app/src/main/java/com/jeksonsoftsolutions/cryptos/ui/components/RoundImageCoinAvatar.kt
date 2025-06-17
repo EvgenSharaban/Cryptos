@@ -1,9 +1,7 @@
 package com.jeksonsoftsolutions.cryptos.ui.components
 
 import android.graphics.Bitmap
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -19,20 +17,25 @@ import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.Transformation
 import com.jeksonsoftsolutions.cryptos.R
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavAnimatedContentScope
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalSharedTransitionScope
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun RoundImageCoinAvatar(
     logo: String,
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedContentScope = LocalNavAnimatedContentScope.current
+        ?: throw IllegalStateException("No AnimatedVisibility found")
+
     with(sharedTransitionScope) {
         Card(
             shape = CircleShape,
             elevation = CardDefaults.cardElevation(0.dp),
-            modifier = modifier.sharedElement(
+            modifier = modifier.sharedBounds(
                 sharedTransitionScope.rememberSharedContentState(key = "coin_avatar_$logo"),
                 animatedVisibilityScope = animatedContentScope
             )

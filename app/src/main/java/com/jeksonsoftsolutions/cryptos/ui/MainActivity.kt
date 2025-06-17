@@ -19,7 +19,9 @@ import com.jeksonsoftsolutions.cryptos.ui.scaffold.environment.CoinsGraph
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.environment.CoinsGraph.CoinDetailsRoute
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.environment.FavoriteGraph
 import com.jeksonsoftsolutions.cryptos.ui.scaffold.environment.ProfileGraph
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavAnimatedContentScope
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalSharedTransitionScope
 import com.jeksonsoftsolutions.cryptos.ui.screens.coindetails.CoinDetailsScreen
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.favorite.FavoriteCoinsScreen
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.home.HomeScreen
@@ -49,35 +51,43 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavApp() {
     val navController = rememberNavController()
-    CompositionLocalProvider(
-        LocalNavController provides navController
-    ) {
+    CompositionLocalProvider(LocalNavController provides navController) {
         SharedTransitionLayout {
-            NavHost(
-                navController = navController,
-                startDestination = CoinsGraph,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                navigation<CoinsGraph>(startDestination = CoinsGraph.CoinsRoute) {
-                    composable<CoinsGraph.CoinsRoute> {
-                        HomeScreen(this@SharedTransitionLayout, this)
+            CompositionLocalProvider(LocalSharedTransitionScope provides this) {
+                NavHost(
+                    navController = navController,
+                    startDestination = CoinsGraph,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    navigation<CoinsGraph>(startDestination = CoinsGraph.CoinsRoute) {
+                        composable<CoinsGraph.CoinsRoute> {
+                            CompositionLocalProvider(LocalNavAnimatedContentScope provides this) {
+                                HomeScreen()
+                            }
+                        }
+                        composable<CoinDetailsRoute> { entry ->
+                            CompositionLocalProvider(LocalNavAnimatedContentScope provides this) {
+                                CoinDetailsScreen()
+                            }
+                        }
                     }
-                    composable<CoinDetailsRoute> { entry ->
-                        CoinDetailsScreen(this@SharedTransitionLayout, this)
-                    }
-                }
 
-                navigation<FavoriteGraph>(startDestination = FavoriteGraph.FavoriteCoinsRoute) {
-                    composable<FavoriteGraph.FavoriteCoinsRoute> {
-                        FavoriteCoinsScreen(this@SharedTransitionLayout, this)
+                    navigation<FavoriteGraph>(startDestination = FavoriteGraph.FavoriteCoinsRoute) {
+                        composable<FavoriteGraph.FavoriteCoinsRoute> {
+                            CompositionLocalProvider(LocalNavAnimatedContentScope provides this) {
+                                FavoriteCoinsScreen()
+                            }
+                        }
+                        composable<FavoriteGraph.FavoriteCoinDetailsRoute> { entry ->
+                            CompositionLocalProvider(LocalNavAnimatedContentScope provides this) {
+                                CoinDetailsScreen()
+                            }
+                        }
                     }
-                    composable<FavoriteGraph.FavoriteCoinDetailsRoute> { entry ->
-                        CoinDetailsScreen(this@SharedTransitionLayout, this)
+                    navigation<ProfileGraph>(startDestination = ProfileGraph.ProfileRoute) {
+                        composable<ProfileGraph.ProfileRoute> { ProfileScreen() }
+                        composable<ProfileGraph.EditProfileRoute> { EditProfileScreen() }
                     }
-                }
-                navigation<ProfileGraph>(startDestination = ProfileGraph.ProfileRoute) {
-                    composable<ProfileGraph.ProfileRoute> { ProfileScreen() }
-                    composable<ProfileGraph.EditProfileRoute> { EditProfileScreen() }
                 }
             }
         }
