@@ -65,7 +65,8 @@ import com.jeksonsoftsolutions.cryptos.ui.screens.Events
 import com.jeksonsoftsolutions.cryptos.ui.screens.Events.MessageForUser
 import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavController
 
-private val BOTTOM_SPACING = 16.dp
+private val paddingValue = 16.dp
+private val spacerHeightValue = 16.dp
 
 @Composable
 fun EditProfileScreen() {
@@ -93,15 +94,15 @@ fun EditProfileScreen() {
 
     // TODO end it later
     // Launcher for requesting permission
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            photoPickerLauncher.launch("image/*")
-        } else {
-            // Show message that permission was not granted
-        }
-    }
+//    val requestPermissionLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.RequestPermission()
+//    ) { isGranted: Boolean ->
+//        if (isGranted) {
+//            photoPickerLauncher.launch("image/*")
+//        } else {
+//            // Show message that permission was not granted
+//        }
+//    }
 
     AppScaffold(
         title = stringResource(R.string.edit_profile_screen),
@@ -217,10 +218,10 @@ fun EditProfileContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(
-                top = 16.dp,
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp + bottomPadding
+                top = paddingValue,
+                start = paddingValue,
+                end = paddingValue,
+                bottom = paddingValue + bottomPadding
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -294,7 +295,7 @@ fun EditProfileContent(
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(spacerHeightValue))
 
         OutlinedTextField(
             value = state.email,
@@ -312,7 +313,7 @@ fun EditProfileContent(
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(spacerHeightValue))
 
         OutlinedTextField(
             value = state.bio,
@@ -342,10 +343,10 @@ private fun measureBottomPadding(navBarHeight: Dp): Dp {
     val imeBottom = with(density) { ime.getBottom(density).toDp() }
     val navBottom = with(density) { navBars.getBottom(density).toDp() }
 
-    val visibleInset = if (imeBottom > 0.dp && imeBottom > navBarHeight) {
+    val visibleInset = if (imeBottom > navBarHeight) {
         imeBottom - navBarHeight + navBottom
     } else {
         navBottom
     }
-    return visibleInset + BOTTOM_SPACING
+    return visibleInset
 }
