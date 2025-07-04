@@ -22,9 +22,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,8 +41,9 @@ import com.jeksonsoftsolutions.cryptos.core.other.TAG
 import com.jeksonsoftsolutions.cryptos.core.other.formatNumber
 import com.jeksonsoftsolutions.cryptos.core.other.roundTo
 import com.jeksonsoftsolutions.cryptos.ui.components.RoundImageCoinAvatar
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalNavAnimatedContentScope
+import com.jeksonsoftsolutions.cryptos.ui.screens.LocalSharedTransitionScope
 import com.jeksonsoftsolutions.cryptos.ui.screens.coins_lists.models.CoinsListItemUI
-import com.jeksonsoftsolutions.cryptos.ui.theme.CryptosTheme
 import com.jeksonsoftsolutions.cryptos.ui.theme.DarkGreen
 import com.jeksonsoftsolutions.cryptos.ui.theme.itemCoinBackground
 import java.util.Locale
@@ -179,33 +180,28 @@ private fun safeCastStringToDouble(value: String): Double {
 @Preview(showSystemUi = true)
 @Composable
 private fun CoinItemWidgetItemPreview() {
-    CryptosTheme {
-        Scaffold {
-            Column(
-                modifier = Modifier.padding(it)
+    SharedTransitionLayout {
+        AnimatedContent(targetState = false) {
+            CompositionLocalProvider(
+                LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                LocalNavAnimatedContentScope provides this
             ) {
-                SharedTransitionLayout {
-                    AnimatedContent(
-                        targetState = ""
-                    ) {
-                        CoinItemWidget(
-                            item = CoinsListItemUI(
-                                id = it,
-                                fullName = "Bitcoin",
-                                shortName = "BTC",
-                                price = "104215.561",
-                                rank = "100",
-                                marketCapUsd = "1134454375148.0439441877343485",
-                                changePercent24Hr = "0.894",
-                                isFavorite = false
-                            ),
-                            onConClicked = {},
-                            onFavoriteClicked = {},
-                            sharedTransitionScope = this@SharedTransitionLayout,
-                            animatedContentScope = this
-                        )
-                    }
-                }
+                CoinItemWidget(
+                    item = CoinsListItemUI(
+                        id = "001",
+                        fullName = "Bitcoin",
+                        shortName = "BTC",
+                        price = "104215.561",
+                        rank = "100",
+                        marketCapUsd = "1134454375148.0439441877343485",
+                        changePercent24Hr = "0.894",
+                        isFavorite = it
+                    ),
+                    onConClicked = {},
+                    onFavoriteClicked = {},
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedContentScope = this,
+                )
             }
         }
     }
